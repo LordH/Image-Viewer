@@ -48,7 +48,7 @@ public class ImageGallery implements GalleryInterface {
 	public void setMode(int mode) {
 		if(this.mode == GalleryInterface.MODE_SERVER) {
 			this.mode = mode;
-			imageDir = "C:\\Users\\Harald\\Pictures";
+			imageDir = "C:\\Users\\Harald\\Pictures\\The sweeter things in life\\Ass";
 
 			System.out.println("Setting up image list for " + user + " from server-side images");
 			setupList(imageDir);

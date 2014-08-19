@@ -5,7 +5,7 @@ package se.viewer.image.launcher;
  * @author Harald Brege
  */
 public class ClientLauncher {
-
+	
 	/**
 	 * Starts the client
 	 * @param args No arguments are used

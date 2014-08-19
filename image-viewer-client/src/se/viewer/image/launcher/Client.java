@@ -58,7 +58,7 @@ public class Client {
 	 * Runs the main view of the application
 	 */
 	public void start() {
-		ServerCommunicator.instance().connect("192.168.1.11", 2106);
+		ServerCommunicator.instance().connect("192.168.1.3", 2106);
 		loginMode();
 	}
 	
