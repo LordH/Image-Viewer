@@ -97,8 +97,8 @@ public class GUIManager implements GUIManagerInterface {
 		
 		connectionPanel = new JPanel();
 		connectionPanel.setLayout(new GridBagLayout());
-		connectionPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		JScrollPane scroll = new JScrollPane(connectionPanel);
+		scroll.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 0;
