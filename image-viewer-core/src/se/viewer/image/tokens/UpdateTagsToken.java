@@ -2,7 +2,7 @@ package se.viewer.image.tokens;
 
 import java.util.ArrayList;
 
-import se.viewer.image.structure.Tag;
+import se.viewer.image.containers.Tag;
 
 public class UpdateTagsToken implements Token {
 	

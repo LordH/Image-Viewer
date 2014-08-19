@@ -1,6 +1,6 @@
 package se.viewer.image.tokens;
 
-import se.viewer.image.structure.Tag;
+import se.viewer.image.containers.Tag;
 
 public class SendThumbnailsToken implements Token {
 	
