@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
 import se.viewer.image.containers.Thumbnail;
+import se.viewer.image.structures.ImageList;
 
 public class ImageGallery implements GalleryInterface {
 	
