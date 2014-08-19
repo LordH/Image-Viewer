@@ -44,8 +44,9 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 		//Setting up the server socket
+				
 		try {
-			server = new ServerSocket(2106, 10, InetAddress.getByName("192.168.1.11"));
+			server = new ServerSocket(2106, 10, InetAddress.getLocalHost());
 			server.setSoTimeout(1000);
 			
 			System.out.println("+++ SERVER OPENED AT " + server.getInetAddress()
@@ -61,7 +62,8 @@ public class Server implements Runnable {
 				Socket connection = server.accept();
 
 				if(blacklist.contains(connection.getInetAddress())) {
-					System.out.println("+++ BLACKLISTED CLIENT AT  " + connection.getInetAddress() + " ATTEMPTED CONNECTION +++");
+					System.out.println("+++ BLACKLISTED CLIENT AT  " + connection.getInetAddress() 
+							+ " ATTEMPTED CONNECTION +++");
 					connection.close();
 				}
 				else {
