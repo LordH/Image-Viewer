@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -36,14 +35,14 @@ public class GUIManager implements GUIManagerInterface {
 	
 	private static GUIManagerInterface instance;
 	
-	private ArrayList<ClientConnection> clients;
+	private ClientList clients;
 	
 	private JFrame frame;
 	private JPanel connectionPanel;
 	private JPanel cardPanel;
 	
 	private GUIManager() {
-		clients = new ArrayList<ClientConnection>();
+		clients = new ClientList();
 	}
 
 	/**
@@ -177,7 +176,7 @@ public class GUIManager implements GUIManagerInterface {
 	private void updateList() {
 		for(Component comp : connectionPanel.getComponents()) {
 			String name = comp.getName();
-			if(name == "client" || name == "fill")
+			if(name != "title")
 				connectionPanel.remove(comp);
 		}
 		
@@ -188,11 +187,10 @@ public class GUIManager implements GUIManagerInterface {
 		c.weightx = 1;
 		c.insets = new Insets(0, 10, 5, 0);
 		
-		for(int i=0; i<clients.size(); i++) {
-			ClientLabel client = new ClientLabel(clients.get(i));
-			client.setName("client");
-			c.gridy = i+1;
-			connectionPanel.add(client, c);
+		int i=1;
+		for(ClientLabel label : clients.getLabels()) {
+			c.gridy = i++;
+			connectionPanel.add(label, c);
 		}
 		
 		JPanel fill = new JPanel();

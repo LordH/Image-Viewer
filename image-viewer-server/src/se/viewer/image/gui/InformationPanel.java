@@ -6,11 +6,13 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import se.viewer.image.server.ClientConnection;
+
 public class InformationPanel extends JPanel {
 	
 	private static final long serialVersionUID = -5522680457220488022L;
 
-	public InformationPanel(String client) {
+	public InformationPanel(ClientConnection client) {
 		setLayout(new GridBagLayout());
 		
 		JLabel label = new JLabel("Text");
