@@ -51,8 +51,10 @@ public class GUIManager implements GUIManagerInterface {
 	 * @return The instance
 	 */
 	protected static GUIManagerInterface instance() {
-		if(instance == null)
+		if(instance == null) {
 			instance = new GUIManager();
+			instance.initialise();
+		}
 		return instance;
 	}
 	
