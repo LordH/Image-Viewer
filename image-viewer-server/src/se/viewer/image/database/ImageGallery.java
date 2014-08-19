@@ -14,9 +14,9 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import se.viewer.image.structure.Image;
-import se.viewer.image.structure.Tag;
-import se.viewer.image.structure.Thumbnail;
+import se.viewer.image.containers.Image;
+import se.viewer.image.containers.Tag;
+import se.viewer.image.containers.Thumbnail;
 
 public class ImageGallery implements GalleryInterface {
 	

@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import se.viewer.image.containers.Image;
+import se.viewer.image.containers.Tag;
+import se.viewer.image.containers.Thumbnail;
 import se.viewer.image.gui.GUIFactoryInterface;
 import se.viewer.image.gui.GUIFactorySelector;
 import se.viewer.image.gui.ApplicationPanel;
 import se.viewer.image.gui.LoginFrame;
-import se.viewer.image.structure.Image;
-import se.viewer.image.structure.Tag;
-import se.viewer.image.structure.Thumbnail;
 
 /**
  * Main class that handles for the client application

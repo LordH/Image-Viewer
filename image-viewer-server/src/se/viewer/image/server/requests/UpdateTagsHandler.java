@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import se.viewer.image.containers.Tag;
 import se.viewer.image.database.DatabaseSelector;
-import se.viewer.image.structure.Tag;
 import se.viewer.image.tokens.Token;
 import se.viewer.image.tokens.UpdateTagsToken;
 

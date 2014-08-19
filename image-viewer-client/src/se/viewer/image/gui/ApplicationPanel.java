@@ -16,10 +16,10 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
+import se.viewer.image.containers.Image;
+import se.viewer.image.containers.Tag;
+import se.viewer.image.containers.Thumbnail;
 import se.viewer.image.launcher.Client;
-import se.viewer.image.structure.Image;
-import se.viewer.image.structure.Tag;
-import se.viewer.image.structure.Thumbnail;
 
 /**
  * Class that represents a panel with a picture on it.

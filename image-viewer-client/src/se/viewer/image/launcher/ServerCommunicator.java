@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 
-import se.viewer.image.structure.Image;
-import se.viewer.image.structure.Tag;
-import se.viewer.image.structure.Thumbnail;
+import se.viewer.image.containers.Image;
+import se.viewer.image.containers.Tag;
+import se.viewer.image.containers.Thumbnail;
 import se.viewer.image.tokens.LoginFailedToken;
 import se.viewer.image.tokens.LoginToken;
 import se.viewer.image.tokens.LogoutToken;

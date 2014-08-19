@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import se.viewer.image.structure.Thumbnail;
+import se.viewer.image.containers.Thumbnail;
 
 public class ThumbnailPanel extends JPanel {
 

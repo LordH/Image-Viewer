@@ -18,8 +18,8 @@ import javax.imageio.ImageReader;
 import javax.imageio.event.IIOReadProgressListener;
 import javax.swing.JPanel;
 
+import se.viewer.image.containers.Image;
 import se.viewer.image.launcher.Client;
-import se.viewer.image.structure.Image;
 
 public class LargeImagePanel extends JPanel {
 	

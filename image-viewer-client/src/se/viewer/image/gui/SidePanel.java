@@ -24,9 +24,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import se.viewer.image.containers.Image;
+import se.viewer.image.containers.Tag;
 import se.viewer.image.launcher.ServerCommunicator;
-import se.viewer.image.structure.Image;
-import se.viewer.image.structure.Tag;
 
 public class SidePanel extends JPanel implements ActionListener{
 

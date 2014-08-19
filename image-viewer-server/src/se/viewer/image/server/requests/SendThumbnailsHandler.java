@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import se.viewer.image.containers.Tag;
+import se.viewer.image.containers.Thumbnail;
 import se.viewer.image.database.GalleryInterface;
-import se.viewer.image.structure.Tag;
-import se.viewer.image.structure.Thumbnail;
 import se.viewer.image.tokens.SendThumbnailsToken;
 import se.viewer.image.tokens.Token;
 

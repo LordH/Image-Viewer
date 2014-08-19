@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import se.viewer.image.structure.Image;
-import se.viewer.image.structure.Tag;
+import se.viewer.image.containers.Image;
+import se.viewer.image.containers.Tag;
 
 /**
  * Class that implements a MySQL database connection
