@@ -35,7 +35,7 @@ public class ImageGallery implements GalleryInterface {
 	protected ImageGallery(String user) {
 		this.user = user;
 		images = new ImageList();
-		thumbnailDir = "thumbnails\\" + user;
+		thumbnailDir = "C:\\Users\\Harald\\Pictures\\thumbnails\\" + user;
 		
 		setMode(GalleryInterface.MODE_SERVER);
 	}
