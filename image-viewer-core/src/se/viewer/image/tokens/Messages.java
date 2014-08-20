@@ -6,7 +6,7 @@ package se.viewer.image.tokens;
  */
 public class Messages {
 	
-	public static final int CREATE_USER = -1;
+	public static final int REGISTER_USER = -1;
 	public static final int LOGIN = 0;
 	public static final int LOGOUT = 1;
 	public static final int LOGIN_SUCCESS = 2;
@@ -26,8 +26,8 @@ public class Messages {
 	 */
 	public static String getMessage(int id) {
 		switch (id) {
-		case CREATE_USER :
-			return "create user";
+		case REGISTER_USER :
+			return "register user";
 		case LOGIN : 
 			return "login";
 		case LOGOUT :

@@ -13,7 +13,7 @@ public class RegisterUserToken implements Token {
 	
 	@Override
 	public int message() {
-		return Messages.CREATE_USER;
+		return Messages.REGISTER_USER;
 	}
 	
 	public String getUsername() {
