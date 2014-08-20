@@ -15,12 +15,6 @@ public interface GUIManagerInterface {
 	 * @param client The client to be added
 	 */
 	public abstract void add(ClientConnection client);
-	
-	/**
-	 * Called to update the info for a client
-	 * @param client The client to be updated
-	 */
-	public abstract void update(ClientConnection client);
 
 	/**
 	 * Called to remove a certain client from the information display
@@ -28,4 +22,9 @@ public interface GUIManagerInterface {
 	 */
 	public abstract void remove(ClientConnection client);
 
+	/**
+	 * Called to indicate which client's information should currently be displayed
+	 * @param client The client whose information should be displayed
+	 */
+	public abstract void setFocused(ClientConnection client);
 }

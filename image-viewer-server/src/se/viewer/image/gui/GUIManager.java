@@ -3,6 +3,7 @@ package se.viewer.image.gui;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -41,6 +42,9 @@ public class GUIManager implements GUIManagerInterface {
 	private JPanel connectionPanel;
 	private JPanel cardPanel;
 	
+	private CardLayout card;
+	private InformationPanel currentInfo;
+	
 	private GUIManager() {
 		clients = new ClientList();
 	}
@@ -68,7 +72,8 @@ public class GUIManager implements GUIManagerInterface {
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.addWindowListener(new ShutdownListener());
 		frame.setTitle("Image Viewer - Server");
-				
+		frame.setMinimumSize(new Dimension(1000, 800));
+		
 		// Setting up menu bar and menus
 		JMenuBar menubar = new JMenuBar();
 		frame.setJMenuBar(menubar);
@@ -112,13 +117,14 @@ public class GUIManager implements GUIManagerInterface {
 		c.insets = new Insets(10, 0, 10, 0);
 		frame.getContentPane().add(sep, c);
 		
+		card = new CardLayout();
 		cardPanel = new JPanel();
-		cardPanel.setLayout(new CardLayout());
-		cardPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		cardPanel.setLayout(card);
+		cardPanel.add(new JPanel(), "empty");
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 2;
 		c.weightx = 1;
-		c.insets = new Insets(10, 10, 10, 10);
+		c.insets = new Insets(0, 0, 0, 0);
 		frame.getContentPane().add(cardPanel, c);
 		
 		//Setting up connections panel
@@ -128,21 +134,22 @@ public class GUIManager implements GUIManagerInterface {
 		title.setFont(new Font("Trebuchet MS", Font.BOLD, 18));
 		c.anchor = GridBagConstraints.WEST;
 		c.weightx = 1;
+		c.ipadx = 100;
 		c.insets = new Insets(10, 10, 10, 10);
 		connectionPanel.add(title, c);
 		
 		JPanel fill = new JPanel();
 		fill.setName("fill");
 		c.gridy = 1;
-		c.ipadx = 250;
-		c.ipady = 800;
 		c.weighty = 1;
+		c.ipadx = 0;
 		c.insets = new Insets(0, 0, 0, 0);
 		connectionPanel.add(fill, c);
 		
 		//Finalising 
 		frame.pack();
 		frame.setVisible(true);
+		card.show(cardPanel, "empty");
 	}
 	
 	//=======================================
@@ -152,18 +159,26 @@ public class GUIManager implements GUIManagerInterface {
 	@Override
 	public void add(ClientConnection client) {
 		clients.add(client);
+		cardPanel.add(clients.getPanel(client), clients.indexOf(client));
 		updateList();
 	}
-	
-	@Override
-	public void update(ClientConnection client) {
-		updateList();
-	}
-	
+
 	@Override
 	public void remove(ClientConnection client) {
+		if(currentInfo == clients.getPanel(client)) {
+			card.show(cardPanel, "empty");
+			currentInfo = null;
+		}
+
+		cardPanel.remove(clients.getPanel(client));
 		clients.remove(client);
 		updateList();
+	}
+	
+	@Override
+	public void setFocused(ClientConnection client) {
+		currentInfo = clients.getPanel(client);
+		card.show(cardPanel, clients.indexOf(client));
 	}
 	
 	//=======================================

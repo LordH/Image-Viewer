@@ -86,6 +86,10 @@ public class ClientConnection extends Observable implements Runnable {
 	 */
 	public void disconnect() {
 		try {
+			setChanged();
+			notifyObservers(Messages.DISCONNECTED);
+			clearChanged();
+			
 			inStream.close();
 			outStream.close();
 			client.close();
@@ -95,7 +99,8 @@ public class ClientConnection extends Observable implements Runnable {
 			Server.instance().disconnect(this);
 			
 		} catch (IOException e) {
-			System.err.println("+++ CLIENT " + getClientId().toUpperCase() + " WAS UNEXCPECTEDLY DISCONNECTED +++\n");
+			System.err.println("+++ CLIENT " + getClientId().toUpperCase() 
+					+ " WAS UNEXCPECTEDLY DISCONNECTED +++\n");
 			Server.instance().disconnect(this);
 		}
 	}
@@ -131,7 +136,11 @@ public class ClientConnection extends Observable implements Runnable {
 					
 					if(handler.dealWithIt(request, outStream)) {
 						authenticated = true;
-						notifyObservers();
+						
+						setChanged();
+						notifyObservers(Messages.LOGIN_SUCCESS);
+						clearChanged();
+						
 						imageServer = GallerySelector.getGallery(clientName);
 						System.out.println("+++ USER " + ((LoginToken) request).getUser()
 								.toUpperCase() + " LOGGED IN FROM " + clientIp + " +++");

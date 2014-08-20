@@ -14,6 +14,8 @@ public class ClientList {
 	private ArrayList<InformationPanel> panels;
 	private ArrayList<ClientLabel> labels;
 	
+	private int index;
+	
 	/**
 	 * Creates a new empty client list
 	 */
@@ -21,6 +23,7 @@ public class ClientList {
 		clients = new ArrayList<ClientConnection>();
 		panels = new ArrayList<InformationPanel>();
 		labels = new ArrayList<ClientLabel>();
+		index = 0;
 	}
 	
 	//=======================================
@@ -34,8 +37,8 @@ public class ClientList {
 	 */
 	public void add(ClientConnection client) {
 		clients.add(client);
-		panels.add(new InformationPanel(client));
-		labels.add(new ClientLabel(client));
+		panels.add(new InformationPanel(index++, client));
+		labels.add(new ClientLabel(index++, client));
 	}
 	
 	/**
@@ -69,7 +72,9 @@ public class ClientList {
 	 */
 	public InformationPanel getPanel(ClientConnection client) {
 		int index = clients.indexOf(client);
-		return panels.get(index);
+		if(index != -1)
+			return panels.get(index);
+		return null;
 	}
 	
 	/**
@@ -104,5 +109,10 @@ public class ClientList {
 	 */
 	public int size() {
 		return clients.size();
+	}
+	
+	public String indexOf(ClientConnection client) {
+		int i = clients.indexOf(client);
+		return Integer.toString(labels.get(i).getID());
 	}
 }

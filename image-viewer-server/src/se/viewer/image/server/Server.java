@@ -106,7 +106,6 @@ public class Server implements Runnable {
 	 * @param client The connection to be removed
 	 */
 	public void disconnect(ClientConnection client) {
-		GUISelector.getGUI().remove(client);
 		connections.remove(client);
 	}
 	
