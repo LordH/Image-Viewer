@@ -1,35 +1,45 @@
 package se.viewer.image.server.requests;
 
-import se.viewer.image.database.GalleryInterface;
+import java.io.ObjectOutputStream;
+
 import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.Messages;
+import se.viewer.image.tokens.Token;
 
 public class RequestHandlerFactory {
 
-	private static RequestHandlerInterface handler;
-	private static GalleryInterface server;
-	private static String user;
+	private ClientConnection client;
+	private RequestHandler handler;
 	
-	public static RequestHandlerInterface getHandler(int request, ClientConnection client) {
-		handler = null;
+	private LoginHandler login;
+	
+	public RequestHandlerFactory(ClientConnection client) {
+		this.client = client;
+	}
+	
+	public boolean handle(Token token) {
+		int request = token.message();
+		ObjectOutputStream stream = client.getStream();
 		
-		if(request == Messages.LOGOUT) {
-			handler = new LogoutHandler(client);
+		if(request == Messages.LOGIN) {
+			if(login == null)
+				login = new LoginHandler(token, stream, client);
+			handler = login;
+		}
+		else if(request == Messages.LOGOUT) {
+			handler = new LogoutHandler(token, stream, client);
 		}
 		else if(request == Messages.SEND_IMAGE) {
-			server = client.getImageServer();
-			handler = new SendImageHandler(server);
+			handler = new SendImageHandler(token, stream, client);
 		}
 		else if(request == Messages.SEND_THUMBNAILS) {
-			server = client.getImageServer();
-			handler = new SendThumbnailsHandler(server);
+			handler = new SendThumbnailsHandler(token, stream, client);
 		}
 		else if(request == Messages.UPDATE_TAGS) {
-			user = client.getClientName();
-			handler = new UpdateTagsHandler(user);
+			handler = new UpdateTagsHandler(token, stream, client);
 		}
 		
-		return handler;
+		return handler.dealWithIt();
 	}
 	
 }

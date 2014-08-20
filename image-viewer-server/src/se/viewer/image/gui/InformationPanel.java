@@ -15,7 +15,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
+import se.viewer.image.database.MessageLog;
 import se.viewer.image.server.ClientConnection;
+import se.viewer.image.tokens.Messages;
 
 /**
  * Class for panel presenting a client's information
@@ -37,11 +39,6 @@ public class InformationPanel extends JPanel implements Observer {
 		this.index = index;
 
 		setLayout(new GridBagLayout());
-		setupBasics();
-		setupPreferences();
-	}
-	
-	private void setupBasics() {
 		GridBagConstraints c = new GridBagConstraints();
 		
 		//Setting up basic components
@@ -106,10 +103,7 @@ public class InformationPanel extends JPanel implements Observer {
 		c.weightx = 0;
 		c.insets = new Insets(0, 0, 10, 10);
 		add(settings, c);
-	}
-	
-	private void setupPreferences() {
-		
+
 	}
 	
 	//=======================================
@@ -118,11 +112,41 @@ public class InformationPanel extends JPanel implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		name.setText(client.getClientId());
-		repaint();
+		if(o.getClass() == ClientConnection.class) {
+			if((int) arg == Messages.LOGIN_SUCCESS) {
+				name.setText(client.getClientId());
+				client.getMessageLog().addObserver(this);
+			}
+		}
+		else if(o.getClass() == MessageLog.class) 
+			addLogMessage((String) arg);
 	}
 	
 	public int getIndex() {
 		return index;
+	}
+	
+	public void addLogMessage(String message) {
+		GridBagConstraints c = new GridBagConstraints();
+		JLabel label;
+		
+		if(log.getComponentCount() > 0) {
+			label = (JLabel) log.getComponent(log.getComponentCount()-1);
+			log.remove(label);
+			c.anchor = GridBagConstraints.NORTHWEST;
+			c.gridy = log.getComponentCount();
+			c.weightx = 1;
+			c.weighty = 0;
+			c.insets = new Insets(0, 5, 0, 5);
+			log.add(label, c);
+		}
+		
+		label = new JLabel(message);
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.gridy = log.getComponentCount();
+		c.weightx = 1;
+		c.weighty = 1;
+		c.insets = new Insets(0, 5, 0, 5);
+		log.add(label, c);
 	}
 }

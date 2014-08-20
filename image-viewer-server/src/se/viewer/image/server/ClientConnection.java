@@ -8,11 +8,8 @@ import java.util.Observable;
 
 import se.viewer.image.database.GalleryInterface;
 import se.viewer.image.database.GallerySelector;
-import se.viewer.image.server.requests.DeniedHandler;
-import se.viewer.image.server.requests.LoginHandler;
-import se.viewer.image.server.requests.RegisterUserHandler;
+import se.viewer.image.database.MessageLog;
 import se.viewer.image.server.requests.RequestHandlerFactory;
-import se.viewer.image.server.requests.RequestHandlerInterface;
 import se.viewer.image.tokens.LoginToken;
 import se.viewer.image.tokens.Messages;
 import se.viewer.image.tokens.Token;
@@ -27,15 +24,15 @@ public class ClientConnection extends Observable implements Runnable {
 	private ObjectInputStream inStream;
 	private ObjectOutputStream outStream;
 	
-	private String clientName = "UNKNOWN";
+	private String clientName;
 	private String clientIp;
 	
 	private boolean run = true;
 	private boolean authenticated = false;
-	private int attemptsLeft = 3;
 	
 	private GalleryInterface imageServer;
-	private RequestHandlerInterface handler;
+	private MessageLog log;
+	private RequestHandlerFactory handler;
 	private Token request;
 	
 	/**
@@ -47,7 +44,9 @@ public class ClientConnection extends Observable implements Runnable {
 			client = socket;
 			inStream = new ObjectInputStream(client.getInputStream());
 			outStream = new ObjectOutputStream(client.getOutputStream());
+			clientName = "UNKNOWN";
 			clientIp = client.getInetAddress().toString();
+			handler = new RequestHandlerFactory(this);
 			
 			System.out.println("+++ CONNECTION FROM " + socket.getLocalAddress().toString() + " +++");
 			
@@ -57,6 +56,10 @@ public class ClientConnection extends Observable implements Runnable {
 		}
 	}
 
+	//=======================================
+	//	GETTERS
+	//---------------------------------------
+	
 	/**
 	 * Call to get the ID on the client for this connection
 	 * @return The IP address for the client
@@ -74,6 +77,14 @@ public class ClientConnection extends Observable implements Runnable {
 	}
 	
 	/**
+	 * Called to get the object output stream associated with this client
+	 * @return The stream to the client
+	 */
+	public ObjectOutputStream getStream() {
+		return outStream;
+	}
+	
+	/**
 	 * Called to get the image server used by this connection
 	 * @return The image server
 	 */
@@ -82,29 +93,31 @@ public class ClientConnection extends Observable implements Runnable {
 	}
 	
 	/**
-	 * Called to disconnect the client connection
+	 * Called to get the log of server messages for this connection
+	 * @return The message log
 	 */
-	public void disconnect() {
-		try {
-			setChanged();
-			notifyObservers(Messages.DISCONNECTED);
-			clearChanged();
-			
-			inStream.close();
-			outStream.close();
-			client.close();
-			authenticated = false;
-			run = false;
-			System.out.println("+++ CLIENT " + getClientId().toUpperCase() + " DISCONNECTED +++\n");
-			Server.instance().disconnect(this);
-			
-		} catch (IOException e) {
-			System.err.println("+++ CLIENT " + getClientId().toUpperCase() 
-					+ " WAS UNEXCPECTEDLY DISCONNECTED +++\n");
-			Server.instance().disconnect(this);
-		}
+	public MessageLog getMessageLog() {
+		return log;
 	}
 
+	public void authenticate() {
+		authenticated = true;
+		imageServer = GallerySelector.getGallery(clientName);
+		log = new MessageLog(this);
+		
+		setChanged();
+		notifyObservers(Messages.LOGIN_SUCCESS);
+		clearChanged();
+		
+		log.newLogMessage("+++ USER " + ((LoginToken) request).getUser()
+				.toUpperCase() + " LOGGED IN FROM " + clientIp + " +++");
+	}
+	
+	public void blacklist() {
+		Server.instance().blacklist(client.getInetAddress());
+		disconnect();
+	}
+	
 	//=======================================
 	//	RUN METHOD
 	//---------------------------------------
@@ -132,42 +145,48 @@ public class ClientConnection extends Observable implements Runnable {
 				//Code for handling login requests
 				if(request.message() == Messages.LOGIN) {
 					clientName = ((LoginToken) request).getUser();
-					handler = new LoginHandler(attemptsLeft);
-					
-					if(handler.dealWithIt(request, outStream)) {
-						authenticated = true;
-						
-						setChanged();
-						notifyObservers(Messages.LOGIN_SUCCESS);
-						clearChanged();
-						
-						imageServer = GallerySelector.getGallery(clientName);
-						System.out.println("+++ USER " + ((LoginToken) request).getUser()
-								.toUpperCase() + " LOGGED IN FROM " + clientIp + " +++");
-					}
-					else
-						attemptsLeft--;
+					handler.handle(request);
 
-					if(attemptsLeft == 0) {
-						Server.instance().blacklist(client.getInetAddress());
-						disconnect();
-						break;
-					}
+					setChanged();
+					notifyObservers("name change");
+					clearChanged();
+
 				}
 				else if(request.message() == Messages.CREATE_USER) {
-					handler = new RegisterUserHandler();
-					handler.dealWithIt(request, outStream);
+					handler.handle(request);
 				}
 				else {
-					handler = new DeniedHandler();
-					handler.dealWithIt(request, outStream);
+					handler.handle(null);
 				}
 			}
-			else {
-				//Code for handling all other requests
-				handler = RequestHandlerFactory.getHandler(request.message(), this);
-				handler.dealWithIt(request, outStream);
+			else if(authenticated){
+				handler.handle(request);
 			}
+		}
+	}
+	
+	/**
+	 * Called to disconnect the client connection
+	 */
+	public void disconnect() {
+		try {
+			setChanged();
+			notifyObservers(Messages.DISCONNECTED);
+			clearChanged();
+			
+			inStream.close();
+			outStream.close();
+			client.close();
+			authenticated = false;
+			run = false;
+			log.shutdown();
+			System.out.println("+++ CLIENT " + getClientId().toUpperCase() + " DISCONNECTED +++\n");
+			Server.instance().disconnect(this);
+			
+		} catch (IOException e) {
+			System.err.println("+++ CLIENT " + getClientId().toUpperCase() 
+					+ " WAS UNEXCPECTEDLY DISCONNECTED +++\n");
+			Server.instance().disconnect(this);
 		}
 	}
 }

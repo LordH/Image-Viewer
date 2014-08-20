@@ -5,16 +5,14 @@ import java.io.ObjectOutputStream;
 import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.Token;
 
-public class LogoutHandler implements RequestHandlerInterface {
-
-	private ClientConnection client;
+public class LogoutHandler extends RequestHandler {
 	
-	public LogoutHandler(ClientConnection client) {
-		this.client = client;
+	public LogoutHandler(Token token, ObjectOutputStream oos, ClientConnection client) {
+		super(token, oos, client);
 	}
 	
 	@Override
-	public boolean dealWithIt(Token token, ObjectOutputStream outStream) {
+	public boolean dealWithIt() {
 		client.disconnect();
 		return true;
 	}

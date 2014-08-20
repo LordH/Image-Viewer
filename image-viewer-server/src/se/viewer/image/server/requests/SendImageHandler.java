@@ -5,19 +5,21 @@ import java.io.ObjectOutputStream;
 
 import se.viewer.image.containers.Image;
 import se.viewer.image.database.GalleryInterface;
+import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.SendImageToken;
 import se.viewer.image.tokens.Token;
 
-public class SendImageHandler implements RequestHandlerInterface {
-
-	private GalleryInterface imageServer;
+public class SendImageHandler extends RequestHandler {
 	
-	public SendImageHandler(GalleryInterface imageServer) {
-		this.imageServer = imageServer;
+	private GalleryInterface imageServer;
+
+	public SendImageHandler(Token token, ObjectOutputStream oos, ClientConnection client) {
+		super(token, oos, client);
+		imageServer = client.getImageServer();
 	}
 	
 	@Override
-	public boolean dealWithIt(Token token, ObjectOutputStream outStream) {
+	public boolean dealWithIt() {
 		int dir = ((SendImageToken) token).direction();
 		Image image;
 		if(dir != 0)
@@ -26,8 +28,8 @@ public class SendImageHandler implements RequestHandlerInterface {
 			image = imageServer.getImage(((SendImageToken) token).getImage());
 		
 		try {
-			outStream.writeObject(image);
-			outStream.flush();
+			oos.writeObject(image);
+			oos.flush();
 			return true;
 		} catch (IOException e) {
 			System.err.println("Could not send image.");

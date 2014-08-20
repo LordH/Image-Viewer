@@ -6,25 +6,27 @@ import java.util.ArrayList;
 
 import se.viewer.image.containers.Tag;
 import se.viewer.image.database.DatabaseSelector;
+import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.Token;
 import se.viewer.image.tokens.UpdateTagsToken;
 
-public class UpdateTagsHandler implements RequestHandlerInterface {
+public class UpdateTagsHandler extends RequestHandler {
 
 	private String user;
-	
-	public UpdateTagsHandler(String user) {
-		this.user = user;
+
+	public UpdateTagsHandler(Token token, ObjectOutputStream oos, ClientConnection client) {
+		super(token, oos, client);
+		user = client.getClientName();
 	}
 	
 	@Override
-	public boolean dealWithIt(Token token, ObjectOutputStream outStream) {
+	public boolean dealWithIt() {
 		
 		UpdateTagsToken update = (UpdateTagsToken) token;
 		boolean success = DatabaseSelector.getDB().updateTags(update.getTags(), update.getImage(), user);
 		ArrayList<Tag> tags = DatabaseSelector.getDB().getTags(update.getImage(), user);
 		try {
-			outStream.writeObject(tags);
+			oos.writeObject(tags);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
