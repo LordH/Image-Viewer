@@ -1,7 +1,5 @@
 package se.viewer.image.server.requests;
 
-import java.io.ObjectOutputStream;
-
 import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.Messages;
 import se.viewer.image.tokens.Token;
@@ -19,24 +17,23 @@ public class RequestHandlerFactory {
 	
 	public boolean handle(Token token) {
 		int request = token.message();
-		ObjectOutputStream stream = client.getStream();
 		
 		if(request == Messages.LOGIN) {
 			if(login == null)
-				login = new LoginHandler(token, stream, client);
+				login = new LoginHandler(token, client);
 			handler = login;
 		}
 		else if(request == Messages.LOGOUT) {
-			handler = new LogoutHandler(token, stream, client);
+			handler = new LogoutHandler(token, client);
 		}
 		else if(request == Messages.SEND_IMAGE) {
-			handler = new SendImageHandler(token, stream, client);
+			handler = new SendImageHandler(token, client);
 		}
 		else if(request == Messages.SEND_THUMBNAILS) {
-			handler = new SendThumbnailsHandler(token, stream, client);
+			handler = new SendThumbnailsHandler(token, client);
 		}
 		else if(request == Messages.UPDATE_TAGS) {
-			handler = new UpdateTagsHandler(token, stream, client);
+			handler = new UpdateTagsHandler(token, client);
 		}
 		
 		return handler.dealWithIt();

@@ -6,12 +6,13 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.stream.Stream;
-
-import se.viewer.image.server.ClientConnection;
 
 /**
  * Class for storing and retrieving clients' message logs
@@ -22,7 +23,54 @@ public class MessageLog extends Observable {
 	private ArrayList<String> log;
 	private File logFile;
 	
-	public MessageLog(ClientConnection client) {
+	public MessageLog() {
+		log = new ArrayList<String>();
+	}
+	
+	//=======================================
+	//	MESSAGE LOGGING
+	//---------------------------------------
+	
+	/**
+	 * Called to inform the log which user is on the client
+	 * @param name Name of the user for the log
+	 */
+	public void userLoggedIn(String user) {
+		setupLogFile(user);
+	}
+	
+	public void newLogMessage(String message) {
+		Calendar time = Calendar.getInstance();
+		Date date = time.getTime();
+		
+		String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+		String add = "[" + timestamp + "] " + message;
+		log.add(add);
+		
+		setChanged();
+		notifyObservers(add);
+		clearChanged();
+	}
+	
+	public void shutdown() {
+		if(logFile != null)
+			try {
+				logFile.setWritable(true);
+				PrintWriter pw = new PrintWriter(logFile);
+				for(String message : log) 
+					pw.write(message + "\r\n");
+				pw.close();
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+	}
+
+	//=======================================
+	//	PRIVATE METHODS
+	//---------------------------------------
+	
+	private void setupLogFile(String user) {
 		File directory = new File("logs");
 		if(!directory.exists())
 			directory.mkdirs();
@@ -36,7 +84,7 @@ public class MessageLog extends Observable {
 		
 		boolean found = false;
 		for(String log : logs)
-			if(log == "logs\\" + client.getClientName()) {
+			if(log == "logs\\" + user + ".log") {
 				logFile = new File(log);
 				found = true;
 				break;
@@ -58,32 +106,12 @@ public class MessageLog extends Observable {
 			}
 		}
 		else {
-			logFile = new File("logs\\" + client.getClientName() + ".log");
+			logFile = new File("logs\\" + user + ".log");
 			try {
 				logFile.createNewFile();
 			} catch (IOException e) {
 				System.err.println("Could not create file");
 			}
-		}
-	}
-	
-	public void newLogMessage(String message) {
-		log.add(message);
-		setChanged();
-		notifyObservers(message);
-		clearChanged();
-	}
-	
-	public void shutdown() {
-		try {
-			logFile.setWritable(true);
-			PrintWriter pw = new PrintWriter(logFile);
-			for(String message : log) 
-				pw.write(message);
-			pw.close();
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package se.viewer.image.server.requests;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import se.viewer.image.containers.Tag;
@@ -14,8 +13,8 @@ public class UpdateTagsHandler extends RequestHandler {
 
 	private String user;
 
-	public UpdateTagsHandler(Token token, ObjectOutputStream oos, ClientConnection client) {
-		super(token, oos, client);
+	public UpdateTagsHandler(Token token, ClientConnection client) {
+		super(token, client);
 		user = client.getClientName();
 	}
 	

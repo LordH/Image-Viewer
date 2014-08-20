@@ -1,7 +1,6 @@
 package se.viewer.image.server.requests;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import se.viewer.image.containers.Tag;
@@ -15,8 +14,9 @@ public class SendThumbnailsHandler extends RequestHandler {
 
 	private GalleryInterface server;
 
-	public SendThumbnailsHandler(Token token, ObjectOutputStream oos, ClientConnection client) {
-		super(token, oos, client);
+	public SendThumbnailsHandler(Token token, ClientConnection client) {
+		super(token, client);
+		server = client.getImageServer();
 	}
 	
 	@Override

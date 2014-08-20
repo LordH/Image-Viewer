@@ -44,18 +44,21 @@ public class ClientConnection extends Observable implements Runnable {
 			client = socket;
 			inStream = new ObjectInputStream(client.getInputStream());
 			outStream = new ObjectOutputStream(client.getOutputStream());
+			
 			clientName = "UNKNOWN";
 			clientIp = client.getInetAddress().toString();
-			handler = new RequestHandlerFactory(this);
 			
-			System.out.println("+++ CONNECTION FROM " + socket.getLocalAddress().toString() + " +++");
+			handler = new RequestHandlerFactory(this);
+			log = new MessageLog();
+			
+			log.newLogMessage("+++ CONNECTION FROM " + socket.getLocalAddress().toString() + " +++");
 			
 		} catch (IOException e) {
 			System.err.println("+++ COULD NOT CREATE STREAMS TO CLIENT +++");
 			e.printStackTrace();
 		}
 	}
-
+	
 	//=======================================
 	//	GETTERS
 	//---------------------------------------
@@ -102,14 +105,14 @@ public class ClientConnection extends Observable implements Runnable {
 
 	public void authenticate(String user) {
 		authenticated = true;
+		clientName = user;
 		imageServer = GallerySelector.getGallery(clientName);
-		log = new MessageLog(this);
+		log.userLoggedIn(clientName);
 		
 		setChanged();
 		notifyObservers(Messages.LOGIN_SUCCESS);
 		clearChanged();
 		
-		clientName = user;
 		log.newLogMessage("+++ USER " + clientName + " LOGGED IN FROM " + clientIp + " +++");
 	}
 	
@@ -132,7 +135,7 @@ public class ClientConnection extends Observable implements Runnable {
 			//Receiving a token from the client
 			try {
 				request = (Token) inStream.readObject();
-				System.out.println("+++ REQUEST RECEIVED FROM " + getClientId().toUpperCase() +
+				log.newLogMessage("+++ REQUEST RECEIVED FROM " + getClientId().toUpperCase() +
 						": " + Messages.getMessage(request.message()).toUpperCase() + " +++");
 			} catch (ClassNotFoundException e) {
 				System.err.println("+++ UNKNOWN TOKEN RECEIVED +++");

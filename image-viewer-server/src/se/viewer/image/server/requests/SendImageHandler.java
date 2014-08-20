@@ -1,7 +1,6 @@
 package se.viewer.image.server.requests;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 import se.viewer.image.containers.Image;
 import se.viewer.image.database.GalleryInterface;
@@ -13,8 +12,8 @@ public class SendImageHandler extends RequestHandler {
 	
 	private GalleryInterface imageServer;
 
-	public SendImageHandler(Token token, ObjectOutputStream oos, ClientConnection client) {
-		super(token, oos, client);
+	public SendImageHandler(Token token, ClientConnection client) {
+		super(token, client);
 		imageServer = client.getImageServer();
 	}
 	

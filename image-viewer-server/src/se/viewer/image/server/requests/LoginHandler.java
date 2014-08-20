@@ -1,7 +1,6 @@
 package se.viewer.image.server.requests;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 import se.viewer.image.database.DatabaseSelector;
 import se.viewer.image.server.ClientConnection;
@@ -22,8 +21,8 @@ public class LoginHandler extends RequestHandler {
 	 * Creates a client login request handler
 	 * @param left Remaining login attempts
 	 */
-	public LoginHandler(Token token, ObjectOutputStream oos, ClientConnection client) {
-		super(token, oos, client);
+	public LoginHandler(Token token, ClientConnection client) {
+		super(token, client);
 		left = 2;
 	}
 	

@@ -20,10 +20,11 @@ public abstract class RequestHandler{
 	 * @param oos The output stream to the client
 	 * @param client The connection to the client
 	 */
-	public RequestHandler(Token token, ObjectOutputStream oos, ClientConnection client) {
+	public RequestHandler(Token token, ClientConnection client) {
 		this.token = token;
-		this.oos = oos;
 		this.client = client;
+		
+		oos = client.getStream();
 	}
 
 	/**

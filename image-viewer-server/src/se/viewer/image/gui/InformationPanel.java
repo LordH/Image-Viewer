@@ -36,6 +36,7 @@ public class InformationPanel extends JPanel implements Observer {
 	public InformationPanel(int index, ClientConnection client) {
 		this.client = client;
 		this.client.addObserver(this);
+		this.client.getMessageLog().addObserver(this);
 		this.index = index;
 
 		setLayout(new GridBagLayout());
@@ -109,7 +110,7 @@ public class InformationPanel extends JPanel implements Observer {
 	//=======================================
 	//	DISPLAY METHODS
 	//---------------------------------------
-
+	
 	@Override
 	public void update(Observable o, Object arg) {
 		if(o.getClass() == ClientConnection.class) {
@@ -148,5 +149,8 @@ public class InformationPanel extends JPanel implements Observer {
 		c.weighty = 1;
 		c.insets = new Insets(0, 5, 0, 5);
 		log.add(label, c);
+		
+		log.validate();
+		log.repaint();
 	}
 }
