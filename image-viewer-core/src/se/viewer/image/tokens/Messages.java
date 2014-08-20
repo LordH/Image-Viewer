@@ -11,6 +11,7 @@ public class Messages {
 	public static final int LOGOUT = 1;
 	public static final int LOGIN_SUCCESS = 2;
 	public static final int LOGIN_FAILURE = 3;
+	public static final int DISCONNECTED = -2;
 	
 	public static final int REQUEST_DENIED = 4;
 	
@@ -35,6 +36,8 @@ public class Messages {
 			return "login success";
 		case LOGIN_FAILURE :
 			return "login failure";
+		case DISCONNECTED :
+			return "disconnected";
 		case REQUEST_DENIED :
 			return "request denied";
 		case SEND_IMAGE :
