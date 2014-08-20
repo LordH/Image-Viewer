@@ -36,7 +36,7 @@ public class MessageLog extends Observable {
 		
 		boolean found = false;
 		for(String log : logs)
-			if(log == "logs\\" + client.getClientId()) {
+			if(log == "logs\\" + client.getClientName()) {
 				logFile = new File(log);
 				found = true;
 				break;
@@ -58,7 +58,7 @@ public class MessageLog extends Observable {
 			}
 		}
 		else {
-			logFile = new File("logs\\" + client.getClientId() + ".log");
+			logFile = new File("logs\\" + client.getClientName() + ".log");
 			try {
 				logFile.createNewFile();
 			} catch (IOException e) {

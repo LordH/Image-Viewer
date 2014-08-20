@@ -37,6 +37,7 @@ public class LoginHandler extends RequestHandler {
 		
 		if(success)
 			try {
+				client.authenticate(request.getUser());
 				oos.writeObject(new LoginSuccessToken());
 				return true;
 			} catch (IOException e) {
@@ -46,6 +47,9 @@ public class LoginHandler extends RequestHandler {
 			try {
 				oos.writeObject(new LoginFailedToken("wrong credentials", left));
 				System.out.println("User login by " + user + " failed, " + left + " attempts left.");
+				left--;
+				if(left < 0)
+					client.blacklist();
 				return false;
 			} catch (IOException e) {
 				e.printStackTrace();

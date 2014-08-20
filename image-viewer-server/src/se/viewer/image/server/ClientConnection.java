@@ -33,7 +33,7 @@ public class ClientConnection extends Observable implements Runnable {
 	private GalleryInterface imageServer;
 	private MessageLog log;
 	private RequestHandlerFactory handler;
-	private Token request;
+//	private Token request;
 	
 	/**
 	 * Opens a new connection handler that caters to the client on the specified socket
@@ -100,7 +100,7 @@ public class ClientConnection extends Observable implements Runnable {
 		return log;
 	}
 
-	public void authenticate() {
+	public void authenticate(String user) {
 		authenticated = true;
 		imageServer = GallerySelector.getGallery(clientName);
 		log = new MessageLog(this);
@@ -109,8 +109,8 @@ public class ClientConnection extends Observable implements Runnable {
 		notifyObservers(Messages.LOGIN_SUCCESS);
 		clearChanged();
 		
-		log.newLogMessage("+++ USER " + ((LoginToken) request).getUser()
-				.toUpperCase() + " LOGGED IN FROM " + clientIp + " +++");
+		clientName = user;
+		log.newLogMessage("+++ USER " + clientName + " LOGGED IN FROM " + clientIp + " +++");
 	}
 	
 	public void blacklist() {
@@ -128,6 +128,7 @@ public class ClientConnection extends Observable implements Runnable {
 	 */
 	public void run() {
 		while (run) {
+			Token request;
 			//Receiving a token from the client
 			try {
 				request = (Token) inStream.readObject();
@@ -135,29 +136,23 @@ public class ClientConnection extends Observable implements Runnable {
 						": " + Messages.getMessage(request.message()).toUpperCase() + " +++");
 			} catch (ClassNotFoundException e) {
 				System.err.println("+++ UNKNOWN TOKEN RECEIVED +++");
+				break;
 			} catch (IOException e) {
 				System.err.println("+++ CONNECTION TO " + getClientId().toUpperCase() + " FAILED +++");
 				disconnect();
 				break;
 			}
 			
+			//Handling the request token
 			if(!authenticated) {
-				//Code for handling login requests
 				if(request.message() == Messages.LOGIN) {
 					clientName = ((LoginToken) request).getUser();
 					handler.handle(request);
-
-					setChanged();
-					notifyObservers("name change");
-					clearChanged();
-
 				}
-				else if(request.message() == Messages.CREATE_USER) {
+				else if(request.message() == Messages.REGISTER_USER) 
 					handler.handle(request);
-				}
-				else {
+				else 
 					handler.handle(null);
-				}
 			}
 			else if(authenticated){
 				handler.handle(request);
@@ -177,11 +172,13 @@ public class ClientConnection extends Observable implements Runnable {
 			inStream.close();
 			outStream.close();
 			client.close();
-			authenticated = false;
+			
+			if(log != null)
+				log.shutdown();
+
 			run = false;
-			log.shutdown();
-			System.out.println("+++ CLIENT " + getClientId().toUpperCase() + " DISCONNECTED +++\n");
 			Server.instance().disconnect(this);
+			System.out.println("+++ CLIENT " + getClientId().toUpperCase() + " DISCONNECTED +++\n");
 			
 		} catch (IOException e) {
 			System.err.println("+++ CLIENT " + getClientId().toUpperCase() 
