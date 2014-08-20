@@ -7,9 +7,13 @@ import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.RegisterUserToken;
 import se.viewer.image.tokens.Token;
 
-public class RegisterUserHandler extends RequestHandler {
+/**
+ * Handler for registration requests
+ * @author Harald Brege
+ */
+public class RegistrationHandler extends RequestHandler {
 
-	public RegisterUserHandler(Token token, ClientConnection client) {
+	public RegistrationHandler(Token token, ClientConnection client) {
 		super(token, client);
 	}
 
@@ -19,7 +23,7 @@ public class RegisterUserHandler extends RequestHandler {
 				((RegisterUserToken) token).getUsername(), 
 				((RegisterUserToken) token).getPassword() );
 		try {
-			oos.writeObject(success);
+			stream.writeObject(success);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

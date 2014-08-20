@@ -9,6 +9,10 @@ import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.Token;
 import se.viewer.image.tokens.UpdateTagsToken;
 
+/**
+ * Handler for client update tags requests
+ * @author Harald Brege
+ */
 public class UpdateTagsHandler extends RequestHandler {
 
 	private String user;
@@ -25,7 +29,7 @@ public class UpdateTagsHandler extends RequestHandler {
 		boolean success = DatabaseSelector.getDB().updateTags(update.getTags(), update.getImage(), user);
 		ArrayList<Tag> tags = DatabaseSelector.getDB().getTags(update.getImage(), user);
 		try {
-			oos.writeObject(tags);
+			stream.writeObject(tags);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

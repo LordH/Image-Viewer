@@ -5,29 +5,29 @@ import java.util.ArrayList;
 
 import se.viewer.image.containers.Tag;
 import se.viewer.image.containers.Thumbnail;
-import se.viewer.image.database.GalleryInterface;
 import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.SendThumbnailsToken;
 import se.viewer.image.tokens.Token;
 
+/**
+ * Handler for client thumbnail requests
+ * @author Harald Brege
+ */
 public class SendThumbnailsHandler extends RequestHandler {
-
-	private GalleryInterface server;
 
 	public SendThumbnailsHandler(Token token, ClientConnection client) {
 		super(token, client);
-		server = client.getImageServer();
 	}
 	
 	@Override
 	public boolean dealWithIt() {
 		try {
 			Tag tag = ((SendThumbnailsToken) token).getTag();
-			ArrayList<Thumbnail> list = server.getThumbnails(tag);
-			ArrayList<Tag> tags = server.getTags(tag);
+			ArrayList<Thumbnail> list = gallery.getThumbnails(tag);
+			ArrayList<Tag> tags = gallery.getTags(tag);
 			
-			oos.writeObject(list);
-			oos.writeObject(tags);
+			stream.writeObject(list);
+			stream.writeObject(tags);
 			
 		} catch (IOException e) {
 			e.printStackTrace();

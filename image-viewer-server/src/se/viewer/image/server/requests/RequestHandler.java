@@ -2,6 +2,8 @@ package se.viewer.image.server.requests;
 
 import java.io.ObjectOutputStream;
 
+import se.viewer.image.database.GalleryInterface;
+import se.viewer.image.database.MessageLog;
 import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.Token;
 
@@ -11,20 +13,23 @@ import se.viewer.image.tokens.Token;
  */
 public abstract class RequestHandler{
 	protected Token token;
-	protected ObjectOutputStream oos;
 	protected ClientConnection client;
+	protected ObjectOutputStream stream;
+	protected GalleryInterface gallery;
+	protected MessageLog log;
 	
 	/**
 	 * Creates a generic client request handler
 	 * @param token The token to be processed
-	 * @param oos The output stream to the client
-	 * @param client The connection to the client
+	 * @param client The client
 	 */
 	public RequestHandler(Token token, ClientConnection client) {
 		this.token = token;
 		this.client = client;
 		
-		oos = client.getStream();
+		stream = client.getStream();
+		gallery = client.getImageServer();
+		log = client.getMessageLog();
 	}
 
 	/**

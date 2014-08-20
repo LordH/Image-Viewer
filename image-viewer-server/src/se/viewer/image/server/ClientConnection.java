@@ -152,10 +152,12 @@ public class ClientConnection extends Observable implements Runnable {
 					clientName = ((LoginToken) request).getUser();
 					handler.handle(request);
 				}
-				else if(request.message() == Messages.REGISTER_USER) 
+				else if(request.message() == Messages.REGISTER_USER) {
 					handler.handle(request);
-				else 
+				}
+				else {
 					handler.handle(null);
+				}
 			}
 			else if(authenticated){
 				handler.handle(request);
