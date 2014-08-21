@@ -72,7 +72,7 @@ public class GUIManager implements GUIManagerInterface {
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.addWindowListener(new ShutdownListener());
 		frame.setTitle("Image Viewer - Server");
-		frame.setMinimumSize(new Dimension(1000, 800));
+		frame.setMinimumSize(new Dimension(1200, 800));
 		
 		// Setting up menu bar and menus
 		JMenuBar menubar = new JMenuBar();
@@ -103,6 +103,7 @@ public class GUIManager implements GUIManagerInterface {
 		connectionPanel.setLayout(new GridBagLayout());
 		JScrollPane scroll = new JScrollPane(connectionPanel);
 		scroll.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		scroll.setMinimumSize(new Dimension(225, 1));
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 0;
