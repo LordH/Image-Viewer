@@ -18,8 +18,8 @@ import javax.swing.JScrollPane;
 
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
-import se.viewer.image.containers.Thumbnail;
 import se.viewer.image.launcher.Client;
+import se.viewer.image.tokens.DeliverThumbnailsToken;
 
 /**
  * Class that represents a panel with a picture on it.
@@ -33,6 +33,8 @@ public class ApplicationPanel extends JPanel{
 	public static final String THUMBNAILS = "thumbnails";
 	public static final String LOADING = "loading";
 
+	private String displaying;
+	private Tag currentTag;
 	private Image source;
 	
 	private LargeImagePanel imagePanel;
@@ -79,7 +81,6 @@ public class ApplicationPanel extends JPanel{
 		scrollLeft.getVerticalScrollBar().setUnitIncrement(10);
 		scrollLeft.getHorizontalScrollBar().setUnitIncrement(10);
 		scrollLeft.setAutoscrolls(true);
-//		scrollLeft.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollLeft.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		scrollLeft.setMinimumSize(new Dimension(320, 1));
 		
@@ -87,6 +88,7 @@ public class ApplicationPanel extends JPanel{
 		scrollRight.getVerticalScrollBar().setUnitIncrement(10);
 		scrollRight.getHorizontalScrollBar().setUnitIncrement(10);
 		scrollRight.setAutoscrolls(true);
+//		scrollRight.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollRight.setName("scroll right");
 		scrollRight.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		scrollRight.addComponentListener(new ComponentListener() {
@@ -149,11 +151,21 @@ public class ApplicationPanel extends JPanel{
 		c.gridx = 0;
 		c.gridy = 0;
 		container.add(loadingPanel, c);
+		
+		revalidate();
+		repaint();
 	}
 	
 	//=======================================
 	//	IMAGE HANDLING METHODS
 	//---------------------------------------
+
+	public void displayImage() {
+		thumbnailPanel.clearDisplay();
+		displaying = IMAGE;
+		currentTag = null;
+		card.show(rightPanel, IMAGE);
+	}
 	
 	public void setImage(Image image) {
 		source = image;
@@ -163,11 +175,6 @@ public class ApplicationPanel extends JPanel{
 	
 	public void clearImage() {
 		setImage(null);
-	}
-
-	public void displayImage() {
-		thumbnailPanel.clear();
-		card.show(rightPanel, IMAGE);
 	}
 	
 	//=======================================
@@ -183,7 +190,8 @@ public class ApplicationPanel extends JPanel{
 	//---------------------------------------
 		
 	public void displayLoading() {
-		thumbnailPanel.clear();
+		thumbnailPanel.clearDisplay();
+		displaying = LOADING;
 		card.show(rightPanel, LOADING);
 	}
 	
@@ -197,11 +205,22 @@ public class ApplicationPanel extends JPanel{
 	//---------------------------------------
 	
 	public void displayThumbnails() {
+		imagePanel.setImage(null);
 		card.show(rightPanel, THUMBNAILS);
-		Client.instance().setFrameTitle("tag");
+		displaying = THUMBNAILS;
+		Client.instance().setFrameTitle(currentTag.getName());
 	}
 	
-	public void setThumbnails(ArrayList<Thumbnail> thumbs) {
-		thumbnailPanel.addThumbnails(thumbs);
+	public void setThumbnails(DeliverThumbnailsToken token) {		
+		if(!token.getTag().equals(currentTag)) {
+			if(displaying == THUMBNAILS)
+				thumbnailPanel.clearDisplay();
+			
+			thumbnailPanel.clearList();
+			currentTag = token.getTag();
+		}
+		thumbnailPanel.addThumbnails(token.getThumbnails());
+		validate();
+		thumbnailPanel.repaint();
 	}
 }

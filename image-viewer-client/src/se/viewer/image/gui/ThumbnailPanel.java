@@ -49,12 +49,17 @@ public class ThumbnailPanel extends JPanel {
 		}
 	}
 	
+	public void clearList() {
+		images = new ArrayList<Thumbnail>();
+		imagesDisplayed = 0;
+	}
+	
 	public void redraw() {
-		clear();
+		clearDisplay();
 		setupList();
 	}
 	
-	public void clear() {
+	public void clearDisplay() {
 		for(Component comp : components)
 			remove(comp);
 		while(components.remove(end))
@@ -103,6 +108,5 @@ public class ThumbnailPanel extends JPanel {
 		add(end, c);
 		components.add(end);
 
-		updateUI();
 	}
 }

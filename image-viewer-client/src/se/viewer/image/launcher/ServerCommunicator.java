@@ -9,7 +9,6 @@ import java.util.LinkedList;
 
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
-import se.viewer.image.containers.Thumbnail;
 import se.viewer.image.tokens.DeliverImageToken;
 import se.viewer.image.tokens.DeliverThumbnailsToken;
 import se.viewer.image.tokens.LoginFailedToken;
@@ -192,18 +191,14 @@ public class ServerCommunicator implements Runnable{
 				if(socket.isClosed())
 					break;
 				try {
-					ArrayList<Thumbnail> thumbs = null;
 					outStream.writeObject(getToken());
 					Token answer = (Token) inStream.readObject();
 					
-					if(answer.message() == Messages.DELIVER_THUMBNAILS)
-						thumbs = ((DeliverThumbnailsToken) answer).getThumbnails();
-					else {
+					if(answer.message() != Messages.DELIVER_THUMBNAILS) {
 						System.err.println("Thumbnail download failed");
 						break;
 					}
-					Client.instance().deliverThumbnails(thumbs);
-					Client.instance().deliverTags(new ArrayList<Tag>());
+					Client.instance().deliverThumbnails(((DeliverThumbnailsToken)answer));
 					
 				} catch (IOException e) {
 					e.printStackTrace();

@@ -6,11 +6,11 @@ import javax.swing.JFrame;
 
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
-import se.viewer.image.containers.Thumbnail;
+import se.viewer.image.gui.ApplicationPanel;
 import se.viewer.image.gui.GUIFactoryInterface;
 import se.viewer.image.gui.GUIFactorySelector;
-import se.viewer.image.gui.ApplicationPanel;
 import se.viewer.image.gui.LoginFrame;
+import se.viewer.image.tokens.DeliverThumbnailsToken;
 
 /**
  * Main class that handles for the client application
@@ -164,8 +164,9 @@ public class Client {
 	 * Called to deliver a list of thumbnails to be displayed
 	 * @param thumbs The thumbnails to be displayed
 	 */
-	public void deliverThumbnails(ArrayList<Thumbnail> thumbs) {
-		panel.setThumbnails(thumbs);
+	public void deliverThumbnails(DeliverThumbnailsToken token) {
+		panel.setThumbnails(token);
+//		panel.setTags(new ArrayList<Tag>());
 		panel.displayThumbnails();
 	}
 	

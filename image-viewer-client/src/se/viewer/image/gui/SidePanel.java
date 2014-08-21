@@ -3,7 +3,6 @@ package se.viewer.image.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -41,11 +40,7 @@ public class SidePanel extends JPanel implements ActionListener{
 	public SidePanel(Image image) {
 		setLayout(new GridBagLayout());
 		components = new ArrayList<Component>();
-		
-		JLabel minsize = new JLabel();
-		minsize.setPreferredSize(new Dimension(320, 1));
-		add(minsize);
-		
+				
 		//Setting up all components
 		searchField = new JTextField();
 		searchField.setText(" Search...");
@@ -80,10 +75,12 @@ public class SidePanel extends JPanel implements ActionListener{
 		
 		c.anchor = GridBagConstraints.CENTER;
 		c.gridy = 1;
+		c.ipadx = 298;
 		add(new JSeparator(SwingConstants.HORIZONTAL), c);
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.gridy = 2;
+		c.ipadx = 0;
 		add(tagLabel, c);
 		
 		if(image != null) {
@@ -145,7 +142,7 @@ public class SidePanel extends JPanel implements ActionListener{
 	}
 	
 	//=======================================
-	//	CONNECTION REQUESTS
+	//	INTERNAL METHODS
 	//---------------------------------------
 	
 	private void updateTags(ArrayList<Tag> newTags) {

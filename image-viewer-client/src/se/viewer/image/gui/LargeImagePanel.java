@@ -67,8 +67,12 @@ public class LargeImagePanel extends JPanel {
 			scaleToSpec = 1.0;
 			setSizeToFit();
 		}
-		else 
+		else {
 			display = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+			scaleToFit = 0;
+			scaleToSpec = 0;
+			setPreferredSize(new Dimension(0, 0));
+		}
 	}
 	
 	/**
