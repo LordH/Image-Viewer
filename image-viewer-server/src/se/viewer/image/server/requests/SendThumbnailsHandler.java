@@ -26,7 +26,7 @@ public class SendThumbnailsHandler extends RequestHandler {
 			Tag tag = ((SendThumbnailsToken) token).getTag();
 			ArrayList<Thumbnail> list = gallery.getThumbnails(tag);
 //			ArrayList<Tag> tags = gallery.getTags(tag);
-			Token send = new DeliverThumbnailsToken(list);
+			Token send = new DeliverThumbnailsToken(tag, list);
 			
 			stream.writeObject(send);
 			stream.flush();

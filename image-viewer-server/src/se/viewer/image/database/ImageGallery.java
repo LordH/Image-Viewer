@@ -48,7 +48,7 @@ public class ImageGallery implements GalleryInterface {
 	public void setMode(int mode) {
 		if(this.mode == GalleryInterface.MODE_SERVER) {
 			this.mode = mode;
-			imageDir = "C:\\Users\\Harald\\Pictures\\The sweeter things in life\\Ass";
+			imageDir = "C:\\Users\\Harald\\Pictures\\The sweeter things in life";
 
 			System.out.println("Setting up image list for " + user + " from server-side images");
 			setupList(imageDir);
@@ -69,6 +69,7 @@ public class ImageGallery implements GalleryInterface {
 		File file = new File(list.get(image));
 		byte[] data = getImageData(file);
 		ArrayList<Tag> tags = DatabaseSelector.getDB().getTags(image, user);
+		delivered = 0;
 		
 		return new Image(image, data, tags);
 	}
@@ -90,6 +91,7 @@ public class ImageGallery implements GalleryInterface {
 			for(String image : temp)
 				list.add(images.getLocation(image), image);
 			this.tag = tag.getName();
+			delivered = 0;
 			
 			System.out.println("List of size " + list.size() + " set up for tag '" + this.tag + "'");
 		}
