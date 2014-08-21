@@ -7,9 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
 
@@ -331,8 +328,6 @@ public class DatabaseMySQL implements DatabaseInterface {
 		} catch (SQLException e) {
 			System.err.println("\n--- COULD NOT UPDATE TAGS FOR " + image + " ---");
 			System.err.println("/// REASON: " + e.getMessage() + " \\\\\\");
-			e.printStackTrace();
-			JOptionPane.showConfirmDialog(new JFrame(), "OY");
 			return false;
 		}
 	}
@@ -373,34 +368,39 @@ public class DatabaseMySQL implements DatabaseInterface {
 			return true;
 	}
 
-	@Override
-	public ArrayList<Tag> getCoTags(String tag, String user) {
-		ArrayList<Tag> tags = new ArrayList<Tag>();
-		try {
-			String query = "SELECT COUNT(*) 'Images', T.name 'Name', TT.name 'Type' "
-					+ "FROM Tag T, Tagged TGD, TagType TT "
-					+ "WHERE TGD.tag = T.tagid	AND T.type = TT.typeid AND TGD.image "
-						+ "IN(SELECT I.imageid FROM Tagged TGD, Image I "
-						+ "WHERE TGD.image = I.imageid AND TGD.tag = ? AND I.user = ?) "
-					+ "GROUP BY T.Name "
-					+ "ORDER BY 'Images';";
-			PreparedStatement prep = con.prepareStatement(query);
-			prep.setInt(1, getTagID(tag, user));
-			prep.setInt(2, getUserID(user));
-			ResultSet answer = prep.executeQuery();
-			
-			for(int i=0; i<20 || !answer.isAfterLast(); i++) {
-				answer.next();
-				Tag temp = new Tag(answer.getString(2), answer.getString(3));
-				temp.setCount(answer.getInt(1));
-				tags.add(temp);
-			}
-		} catch (SQLException e) {
-			System.err.println("\n--- COULD NOT GET TAG INFO FOR TAG " + tag + " ---");
-			System.err.println("/// REASON: " + e.getMessage() + " \\\\\\");
-		}
-		return tags;
-	}
+//	@Override
+//	public ArrayList<Tag> getCoTags(String tag, String user) {
+//		ArrayList<Tag> tags = new ArrayList<Tag>();
+//		try {
+//			String query = 
+//					"SELECT COUNT(*) 'Images', T.name 'Name', TT.name 'Type' "
+//					+ "FROM Tag T, Tagged TGD, TagType TT "
+//					+ "WHERE TGD.tag = T.tagid	"
+//						+ "AND T.type = TT.typeid "
+//						+ "AND TGD.image IN "
+//							+ "(SELECT I.imageid FROM Tagged TGD, Image I "
+//							+ "WHERE TGD.image = I.imageid AND TGD.tag = ? AND I.user = ?) "
+//					+ "GROUP BY T.Name "
+//					+ "ORDER BY 'Images';";
+//			
+//			PreparedStatement prep = con.prepareStatement(query);
+//			prep.setInt(1, getTagID(tag, user));
+//			prep.setInt(2, getUserID(user));
+//			ResultSet answer = prep.executeQuery();
+//			
+//			for(int i=0; i<20 || !answer.isAfterLast(); i++) {
+//				answer.next();
+//				Tag temp = new Tag(answer.getString(2), answer.getString(3));
+//				temp.setCount(answer.getInt(1));
+//				tags.add(temp);
+//			}
+//		} catch (SQLException e) {
+//			System.err.println("\n--- COULD NOT GET TAG INFO FOR TAG " + tag + " ---");
+//			System.err.println("/// REASON: " + e.getMessage() + " \\\\\\");
+//			e.printStackTrace();
+//		}
+//		return tags;
+//	}
 
 	@Override
 	public boolean add(Tag tag, String user) {

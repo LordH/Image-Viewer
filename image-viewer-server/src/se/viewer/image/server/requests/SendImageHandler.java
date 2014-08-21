@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import se.viewer.image.containers.Image;
 import se.viewer.image.server.ClientConnection;
+import se.viewer.image.tokens.DeliverImageToken;
 import se.viewer.image.tokens.SendImageToken;
 import se.viewer.image.tokens.Token;
 
@@ -25,9 +26,10 @@ public class SendImageHandler extends RequestHandler {
 			image = gallery.getImage(dir);
 		else
 			image = gallery.getImage(((SendImageToken) token).getImage());
+		Token send = new DeliverImageToken(image);
 		
 		try {
-			stream.writeObject(image);
+			stream.writeObject(send);
 			stream.flush();
 			return true;
 		} catch (IOException e) {

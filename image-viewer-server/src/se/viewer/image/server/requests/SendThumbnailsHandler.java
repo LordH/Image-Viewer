@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import se.viewer.image.containers.Tag;
 import se.viewer.image.containers.Thumbnail;
 import se.viewer.image.server.ClientConnection;
+import se.viewer.image.tokens.DeliverThumbnailsToken;
 import se.viewer.image.tokens.SendThumbnailsToken;
 import se.viewer.image.tokens.Token;
 
@@ -24,10 +25,11 @@ public class SendThumbnailsHandler extends RequestHandler {
 		try {
 			Tag tag = ((SendThumbnailsToken) token).getTag();
 			ArrayList<Thumbnail> list = gallery.getThumbnails(tag);
-			ArrayList<Tag> tags = gallery.getTags(tag);
+//			ArrayList<Tag> tags = gallery.getTags(tag);
+			Token send = new DeliverThumbnailsToken(list);
 			
-			stream.writeObject(list);
-			stream.writeObject(tags);
+			stream.writeObject(send);
+			stream.flush();
 			
 		} catch (IOException e) {
 			e.printStackTrace();

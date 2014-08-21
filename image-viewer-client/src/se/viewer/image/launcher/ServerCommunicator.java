@@ -5,12 +5,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.LinkedList;
 
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
 import se.viewer.image.containers.Thumbnail;
+import se.viewer.image.tokens.DeliverImageToken;
+import se.viewer.image.tokens.DeliverThumbnailsToken;
 import se.viewer.image.tokens.LoginFailedToken;
 import se.viewer.image.tokens.LoginToken;
 import se.viewer.image.tokens.LogoutToken;
@@ -131,11 +132,14 @@ public class ServerCommunicator implements Runnable{
 						Client.instance().loginSuccess(true, 0);
 					}
 					else if(answer.message() == Messages.LOGIN_FAILURE) {
-						System.out.println("Login failed because of: " + ((LoginFailedToken) answer).reason());
-						System.out.println("Attempts left: " + ((LoginFailedToken) answer).attemptsLeft());
-						Client.instance().loginSuccess(false, ((LoginFailedToken) answer).attemptsLeft());
+						System.out.println("Login failed because of: " 
+								+ ((LoginFailedToken) answer).reason());
+						System.out.println("Attempts left: " 
+								+ ((LoginFailedToken) answer).attemptsLeft());
+						Client.instance().loginSuccess(false, 
+								((LoginFailedToken) answer).attemptsLeft());
 					}
-					
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
@@ -164,11 +168,16 @@ public class ServerCommunicator implements Runnable{
 				
 				Client.instance().deliverUpdateProgress(Client.IMAGE_DOWNLOAD_STARTED, 0);
 				try {
-					long time1 = Calendar.getInstance().getTimeInMillis();
+					Image image = null;					
 					outStream.writeObject(getToken());
-					Image image = (Image) inStream.readObject();
-					long time2 = Calendar.getInstance().getTimeInMillis();
-					System.out.println("Time to download image: " + (time2-time1) + " ms");
+					Token token = (Token) inStream.readObject();
+					
+					if(token.message() == Messages.DELIVER_IMAGE)
+						image = ((DeliverImageToken) token).getImage();
+					else {
+						System.err.println("Image download failed");
+						break;
+					}
 					Client.instance().deliverImage(image);
 					
 				} catch (IOException e) {
@@ -183,11 +192,18 @@ public class ServerCommunicator implements Runnable{
 				if(socket.isClosed())
 					break;
 				try {
+					ArrayList<Thumbnail> thumbs = null;
 					outStream.writeObject(getToken());
-					ArrayList<Thumbnail> thumbs = (ArrayList<Thumbnail>) inStream.readObject();
-					ArrayList<Tag> tags = (ArrayList<Tag>) inStream.readObject();
+					Token answer = (Token) inStream.readObject();
+					
+					if(answer.message() == Messages.DELIVER_THUMBNAILS)
+						thumbs = ((DeliverThumbnailsToken) answer).getThumbnails();
+					else {
+						System.err.println("Thumbnail download failed");
+						break;
+					}
 					Client.instance().deliverThumbnails(thumbs);
-					Client.instance().deliverTags(tags);
+					Client.instance().deliverTags(new ArrayList<Tag>());
 					
 				} catch (IOException e) {
 					e.printStackTrace();

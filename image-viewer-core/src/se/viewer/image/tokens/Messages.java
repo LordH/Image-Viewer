@@ -19,6 +19,9 @@ public class Messages {
 	public static final int SEND_THUMBNAILS = 6;
 	public static final int UPDATE_TAGS = 7;
 	
+	public static final int DELIVER_IMAGE = 8;
+	public static final int DELIVER_THUMBNAILS = 9;
+	
 	/**
 	 * Called to get the message as a string
 	 * @param id ID of the message
@@ -46,6 +49,10 @@ public class Messages {
 			return "send thumbnails";
 		case UPDATE_TAGS :
 			return "update tags";
+		case DELIVER_IMAGE :
+			return "deliver image";
+		case DELIVER_THUMBNAILS :
+			return "deliver thumbnails";
 		default:
 			return "invalid message id";
 		}

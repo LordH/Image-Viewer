@@ -135,8 +135,8 @@ public class ClientConnection extends Observable implements Runnable {
 			//Receiving a token from the client
 			try {
 				request = (Token) inStream.readObject();
-				log.newLogMessage("+++ REQUEST RECEIVED FROM " + getClientId().toUpperCase() +
-						": " + Messages.getMessage(request.message()).toUpperCase() + " +++");
+				log.newLogMessage("Request received from " + getClientId().toUpperCase() +
+						": +++ " + Messages.getMessage(request.message()).toUpperCase() + " +++");
 			} catch (ClassNotFoundException e) {
 				System.err.println("+++ UNKNOWN TOKEN RECEIVED +++");
 				break;

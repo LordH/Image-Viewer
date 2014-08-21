@@ -109,11 +109,11 @@ public class ImageGallery implements GalleryInterface {
 		return thumbnails;
 	}
 
-	@Override
-	public ArrayList<Tag> getTags(Tag tag) {
-		ArrayList<Tag> temp = DatabaseSelector.getDB().getCoTags(tag.getName(), user);
-		return temp;
-	}
+//	@Override
+//	public ArrayList<Tag> getTags(Tag tag) {
+//		ArrayList<Tag> temp = DatabaseSelector.getDB().getCoTags(tag.getName(), user);
+//		return temp;
+//	}
 	
 	//=======================================
 	//	PRIVATE METHODS

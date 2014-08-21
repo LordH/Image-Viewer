@@ -33,11 +33,11 @@ public interface GalleryInterface {
 	 */
 	public abstract ArrayList<Thumbnail> getThumbnails(Tag tag);
 
-	/**
-	 * Called to get all tags that are tagged along with the provided tag
-	 * @param tag The tag to check for associated tags
-	 * @return A list of 20 tags associated with the tag provided
-	 */
-	public abstract ArrayList<Tag> getTags(Tag tag);
+//	/**
+//	 * Called to get all tags that are tagged along with the provided tag
+//	 * @param tag The tag to check for associated tags
+//	 * @return A list of 20 tags associated with the tag provided
+//	 */
+//	public abstract ArrayList<Tag> getTags(Tag tag);
 
 }

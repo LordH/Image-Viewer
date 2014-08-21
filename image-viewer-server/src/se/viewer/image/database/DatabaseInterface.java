@@ -137,13 +137,13 @@ public interface DatabaseInterface {
 	 */
 	public abstract boolean add(Tag tag, String user);
 
-	/**
-	 * Called to get a list of the most common tags that come together with a certain tag
-	 * @param tag The tag whose common tags are required
-	 * @param user The user that owns the tags
-	 * @return A list of the up to 20 most common tag
-	 */
-	public abstract ArrayList<Tag> getCoTags(String tag, String user);
+//	/**
+//	 * Called to get a list of the most common tags that come together with a certain tag
+//	 * @param tag The tag whose common tags are required
+//	 * @param user The user that owns the tags
+//	 * @return A list of the up to 20 most common tag
+//	 */
+//	public abstract ArrayList<Tag> getCoTags(String tag, String user);
 	
 	/**
 	 * Called to get the number of images tagged with a certain tag
