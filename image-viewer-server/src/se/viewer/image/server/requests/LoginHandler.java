@@ -1,7 +1,10 @@
 package se.viewer.image.server.requests;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import se.viewer.image.containers.Tag;
+import se.viewer.image.containers.Thumbnail;
 import se.viewer.image.database.DatabaseSelector;
 import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.LoginFailedToken;
@@ -37,7 +40,12 @@ public class LoginHandler extends RequestHandler {
 		if(success)
 			try {
 				client.authenticate(request.getUser());
-				stream.writeObject(new LoginSuccessToken());
+				
+				ArrayList<Tag> tags = DatabaseSelector.getDB().getAllTags(request.getUser());
+				gallery = client.getImageServer();
+				ArrayList<Thumbnail> thumbs = gallery.getThumbnails(new Tag("tagme", "special"));
+				
+				stream.writeObject(new LoginSuccessToken(tags, thumbs));
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();

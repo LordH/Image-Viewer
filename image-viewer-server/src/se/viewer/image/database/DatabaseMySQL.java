@@ -193,7 +193,7 @@ public class DatabaseMySQL implements DatabaseInterface {
 		int userid = getUserID(user);
 		try {
 			String query = "INSERT INTO Image (name, user) VALUES "
-					+ "( ? , ? ) ON DUPLICATE KEY UPDATE imageid = imageid;";
+					+ "( ? , ?) ON DUPLICATE KEY UPDATE imageid = imageid;";
 			PreparedStatement prep = con.prepareStatement(query);
 			prep.setString(1, image.getName());
 			prep.setInt(2, userid);
@@ -256,9 +256,11 @@ public class DatabaseMySQL implements DatabaseInterface {
 			
 			while(answer.next()) {
 				Tag temp = new Tag(answer.getString(1), answer.getString(2));
-				temp.setCount(getTaggedCount(temp.getName(), user));
+//				temp.setCount(getTaggedCount(temp.getName(), user));
 				tags.add(temp);
 			}
+			setTagCounts(tags, user);
+			
 			
 		} catch (SQLException e) {
 			System.err.println("\n--- COULD NOT RETRIEVE TAGS FOR "+ image + " ---");
@@ -360,6 +362,29 @@ public class DatabaseMySQL implements DatabaseInterface {
 	}
 	
 	@Override
+	public ArrayList<Tag> getAllTags(String user) {
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		try {
+			String query = "SELECT T.name, T.type FROM Tag T, User U "
+					+ "WHERE T.user = U.userid AND U.name = ? ;";
+			PreparedStatement prep = con.prepareStatement(query);
+			prep.setString(1, user);
+			ResultSet answer = prep.executeQuery();
+			
+			while(answer.next()){
+				tags.add(new Tag(answer.getString(1), answer.getString(2)));
+			}
+			setTagCounts(tags, user);
+			
+		} catch (SQLException e) {
+			System.err.println("\n--- COULD GET TAGS FOR USER " + user + " ---");
+			System.err.println("/// REASON: " + e.getMessage() + " \\\\\\");
+		}
+		
+		return tags;
+	}
+	
+	@Override
 	public boolean existsTag(String tag, String user) {
 		int exists = getTagID(tag, user);
 		if(exists == 0)
@@ -423,25 +448,58 @@ public class DatabaseMySQL implements DatabaseInterface {
 		}
 	}
 	
-	@Override
-	public int getTaggedCount(String tag, String user) {
-		int count = 0;
-		
+//	@Override
+//	public int getTaggedCount(String tag, String user) {
+//		int count = 0;
+//		
+//		try {
+//			String query = "SELECT Count(image) FROM Tagged WHERE tag = ? ;";
+//			PreparedStatement prep = con.prepareStatement(query);
+//			prep.setInt(1, getTagID(tag, user));
+//			ResultSet answer = prep.executeQuery();
+//
+//			if(answer.isBeforeFirst()) {
+//				answer.next();
+//				count = answer.getInt(1);
+//			}
+//		} catch (SQLException e) {
+//			System.err.println("\n--- COULD NOT RETRIEVE TAG COUNT ---");
+//			System.err.println("/// REASON: " + e.getMessage() + " \\\\\\");
+//		}
+//		return count;
+//	}
+	
+	public void setTagCounts(ArrayList<Tag> tags, String user) {
 		try {
-			String query = "SELECT Count(image) FROM Tagged WHERE tag = ? ;";
+			String query = "SELECT T.name, Count(TGD.image) FROM Tag T, Tagged TGD, User U "
+			+ "WHERE TGD.tag = T.tagid "
+				+ "AND T.user = U.userid "
+				+ "AND U.name = ? "
+				+ "AND T.name IN (";
+			for(int i=0; i<tags.size(); i++) 
+				if(i == tags.size() -1)
+					query = query + " ? ) ";
+				else
+					query = query + " ? ,";	
+			query = query + "GROUP BY T.name;";
+			
 			PreparedStatement prep = con.prepareStatement(query);
-			prep.setInt(1, getTagID(tag, user));
+			prep.setString(1, user);
+			int n = 2;
+			for(Tag tag : tags) 
+				prep.setString(n++, tag.getName());
 			ResultSet answer = prep.executeQuery();
-
-			if(answer.isBeforeFirst()) {
-				answer.next();
-				count = answer.getInt(1);
-			}
+			
+			while(answer.next()) 
+				for(Tag tag : tags) 
+					if(tag.getName().equals(answer.getString(1))) {
+						tag.setCount(answer.getInt(2));
+						break;
+					}
 		} catch (SQLException e) {
 			System.err.println("\n--- COULD NOT RETRIEVE TAG COUNT ---");
 			System.err.println("/// REASON: " + e.getMessage() + " \\\\\\");
 		}
-		return count;
 	}
 	
 	@Override

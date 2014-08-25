@@ -8,14 +8,15 @@ USE ImageDB;
 CREATE TABLE Image
    (imageid INT UNIQUE AUTO_INCREMENT,
 	name VARCHAR (255),
-	user INT,
 	added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	user INT,
 	CONSTRAINT pk_image PRIMARY KEY(name, user)) ENGINE=InnoDB;
 
 CREATE TABLE Tag
    (tagid INT UNIQUE AUTO_INCREMENT,
 	name VARCHAR(64),
 	type INT,
+	info TEXT,
 	user INT,
 	CONSTRAINT pk_tag PRIMARY KEY(name, user)) ENGINE=InnoDB;
 

@@ -121,6 +121,8 @@ public interface DatabaseInterface {
 	 */
 	public abstract int getTagID(String tag, String user);
 
+	public abstract ArrayList<Tag> getAllTags(String user);
+	
 	/**
 	 * Called to check whether a certain tag exists in the database or not
 	 * @param tag The name of the tag
@@ -145,13 +147,13 @@ public interface DatabaseInterface {
 //	 */
 //	public abstract ArrayList<Tag> getCoTags(String tag, String user);
 	
-	/**
-	 * Called to get the number of images tagged with a certain tag
-	 * @param tag The tag in question
-	 * @param user The name of the user that owns the tag
-	 * @return The number of tagged images
-	 */
-	public abstract int getTaggedCount(String tag, String user);
+//	/**
+//	 * Called to get the number of images tagged with a certain tag
+//	 * @param tag The tag in question
+//	 * @param user The name of the user that owns the tag
+//	 * @return The number of tagged images
+//	 */
+//	public abstract int getTaggedCount(String tag, String user);
 
 	/**
 	 * Called to get a list of all images a user has that are tagged with a certain tag

@@ -12,6 +12,7 @@ import se.viewer.image.containers.Tag;
 import se.viewer.image.tokens.DeliverImageToken;
 import se.viewer.image.tokens.DeliverThumbnailsToken;
 import se.viewer.image.tokens.LoginFailedToken;
+import se.viewer.image.tokens.LoginSuccessToken;
 import se.viewer.image.tokens.LoginToken;
 import se.viewer.image.tokens.LogoutToken;
 import se.viewer.image.tokens.Messages;
@@ -37,6 +38,7 @@ public class ServerCommunicator implements Runnable{
 	private static final int GET_IMAGE = 6;
 	private static final int GET_THUMBNAILS = 7;
 	private static final int UPDATE_TAGS = 8;
+//	private static final int SEARCH_QUERY = 9;
 	
 	private static ServerCommunicator instance;
 	private static Thread thread;
@@ -127,14 +129,13 @@ public class ServerCommunicator implements Runnable{
 					Token answer = (Token) inStream.readObject();
 					
 					if(answer.message() == Messages.LOGIN_SUCCESS) {
+						LoginSuccessToken t = (LoginSuccessToken) answer;
 						System.out.println("Login successful.");
 						Client.instance().loginSuccess(true, 0);
+						Client.instance().deliverThumbnails(t.getThumbs());
+						Client.instance().deliverTags(t.getTags());
 					}
 					else if(answer.message() == Messages.LOGIN_FAILURE) {
-						System.out.println("Login failed because of: " 
-								+ ((LoginFailedToken) answer).reason());
-						System.out.println("Attempts left: " 
-								+ ((LoginFailedToken) answer).attemptsLeft());
 						Client.instance().loginSuccess(false, 
 								((LoginFailedToken) answer).attemptsLeft());
 					}
@@ -223,6 +224,20 @@ public class ServerCommunicator implements Runnable{
 					e.printStackTrace();
 				}
 				break;
+//				
+//			case SEARCH_QUERY :
+//				if(socket.isClosed())
+//					break;
+//				
+//				try {
+//					outStream.writeObject(getToken());
+//					Token answer = (Token) inStream.readObject();
+//					
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				} catch (ClassNotFoundException e) {
+//					e.printStackTrace();
+//				}
 			}
 		}
 	}

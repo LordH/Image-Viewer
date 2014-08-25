@@ -62,8 +62,6 @@ public class GUIHandler implements GUIHandlerInterface {
 		exitbutton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Window closed.");
-				
 				ServerCommunicator.instance().disconnect();
 				System.out.println("Client shutting down");
 				System.exit(0);

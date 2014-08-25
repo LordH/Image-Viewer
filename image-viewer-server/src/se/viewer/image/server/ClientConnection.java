@@ -33,7 +33,6 @@ public class ClientConnection extends Observable implements Runnable {
 	private GalleryInterface imageServer;
 	private MessageLog log;
 	private RequestHandlerFactory handler;
-//	private Token request;
 	
 	/**
 	 * Opens a new connection handler that caters to the client on the specified socket
