@@ -2,14 +2,11 @@ package se.viewer.image.launcher;
 
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
-
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
-import se.viewer.image.gui.ApplicationPanel;
-import se.viewer.image.gui.GUIFactoryInterface;
-import se.viewer.image.gui.GUIFactorySelector;
-import se.viewer.image.gui.LoginFrame;
+import se.viewer.image.gui.GUIHandlerInterface;
+import se.viewer.image.gui.GUISelector;
+import se.viewer.image.gui.ViewerInterface;
 import se.viewer.image.tokens.DeliverThumbnailsToken;
 
 /**
@@ -18,26 +15,17 @@ import se.viewer.image.tokens.DeliverThumbnailsToken;
  */
 public class Client {
 
-	public static final int SOURCE_SERVER = 0;
-	public static final int SOURCE_LOCAL = 1;
-	
 	public static final int IMAGE_DOWNLOAD_STARTED = 0;
 	public static final int IMAGE_BUFFER_PROGRESS = 1;
 	public static final int IMAGE_BUFFER_COMPLETE = 2;
 	
 	private static Client instance;
 	
-	private GUIFactoryInterface factory;
-	
-	private JFrame frame;
-	private LoginFrame login;
-	private ApplicationPanel panel;
-	
-	private int source;
+	private GUIHandlerInterface factory;
+	private ViewerInterface panel;
 	
 	private Client() {
-		setImageSource(SOURCE_SERVER);
-		factory = GUIFactorySelector.getFactory();
+		factory = GUISelector.getFactory();
 	}
 	
 	/**
@@ -63,34 +51,25 @@ public class Client {
 	}
 	
 	/**
-	 * Sets the image handler to either fetch local images or from the server
-	 * @param source SOURCE_SERVER or SOURCE_LOCAL
-	 */
-	public void setImageSource(int source) {
-		this.source = source;
-	}
-	
-	/**
 	 * Called to set the title of the frame
 	 * @param title String to be set into the title
 	 */
-	public void setFrameTitle(String title) {
-		frame.setTitle("Image Viewer - " + title);
+	public void setTitle(String title) {
+		factory.setTitle("Image Viewer - " + title);
 	}
 	
 	/**
 	 * Called to activate the main viewer mode of the application
 	 */
 	public void viewerMode() {
-		frame = factory.getFrame();
-		panel = factory.setViewerMode(frame);
+		panel = factory.viewerMode();
 	}
 	
 	/**
 	 * Called to activate the login mode of the application
 	 */
 	public void loginMode() {
-		login = factory.getLoginFrame();
+		factory.loginMode();
 	}
 	
 	//=======================================
@@ -102,9 +81,7 @@ public class Client {
 	 * @param dir 1 for the next image or -1 for the previous
 	 */
 	public void getImage(int dir) {
-		if(source == SOURCE_SERVER) {
-			ServerCommunicator.instance().getImage(dir);
-		}
+		ServerCommunicator.instance().getImage(dir);
 	}
 	
 	/**
@@ -126,9 +103,9 @@ public class Client {
 	 */
 	public void loginSuccess(boolean success, int attemptsLeft) {
 		if(!success)
-			login.setMessage("Login failed! " + attemptsLeft + " attempts left.");
+			factory.setMessage("Login failed! " + attemptsLeft + " attempts left.");
 		else {
-			login.success();
+			factory.loginSuccess();
 			viewerMode();
 		}
 	}
@@ -139,9 +116,9 @@ public class Client {
 	 */
 	public void registrationSuccess(boolean success) {
 		if(success)
-			login.setMessage("Successfully created new user!");
+			factory.setMessage("Successfully created new user!");
 		else
-			login.setMessage("Failed to create user!");
+			factory.setMessage("Failed to create user!");
 	}
 
 	/**

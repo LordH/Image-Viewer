@@ -25,7 +25,7 @@ import se.viewer.image.launcher.ServerCommunicator;
  * Class for displaying the login prompt when the application launches
  * @author Harald Brege
  */
-public class LoginFrame extends JFrame {
+public class LoginFrame extends JFrame implements LoginInterface {
 	
 	private static final long serialVersionUID = -3060670952519287670L;
 	private JTextField userField;
@@ -150,19 +150,20 @@ public class LoginFrame extends JFrame {
 		pack();
 	}
 	
-	/**
-	 * Called to set the message displayed to the user
-	 * @param message The message to be shown
+	/* (non-Javadoc)
+	 * @see se.viewer.image.gui.LoginInterface#setMessage(java.lang.String)
 	 */
+	@Override
 	public void setMessage(String message) {
 		this.message.setText(message);
 	}
 	
-	/**
-	 * Called when the server confirms successful login do dispose the login frame
+	/* (non-Javadoc)
+	 * @see se.viewer.image.gui.LoginInterface#success()
 	 */
+	@Override
 	public void success() {
-		dispose();
+		setVisible(false);
 	}
 	
 	//=======================================

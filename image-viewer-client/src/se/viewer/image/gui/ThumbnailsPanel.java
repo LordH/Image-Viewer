@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import se.viewer.image.containers.Thumbnail;
 
-public class ThumbnailPanel extends JPanel {
+public class ThumbnailsPanel extends JPanel {
 
 	private static final long serialVersionUID = -8104118838714686809L;
 	private ArrayList<Component> components;
@@ -20,7 +20,7 @@ public class ThumbnailPanel extends JPanel {
 	
 	private JLabel end;
 	
-	public ThumbnailPanel(ArrayList<Thumbnail> images) {
+	public ThumbnailsPanel(ArrayList<Thumbnail> images) {
 		setLayout(new GridBagLayout());
 		
 		this.images = new ArrayList<Thumbnail>();
@@ -75,7 +75,7 @@ public class ThumbnailPanel extends JPanel {
 		while(components.remove(end))
 			remove(end);
 		
-		SmallImagePanel image;
+		ImagePanelSmall image;
 		
 		int rows = (int)(getParent().getParent().getParent().getWidth() / 235.0);
 		int start = imagesDisplayed;
@@ -88,7 +88,7 @@ public class ThumbnailPanel extends JPanel {
 		for(int i=start; i<images.size(); i++) {
 			c.gridx = i % rows;
 			c.gridy = (int) Math.floor(i/(double)rows) + 1;
-			image = new SmallImagePanel(images.get(i).getName(), images.get(i).getImage(null));
+			image = new ImagePanelSmall(images.get(i).getName(), images.get(i).getImage(null));
 			add(image, c);
 			components.add(image);
 			imagesDisplayed++;

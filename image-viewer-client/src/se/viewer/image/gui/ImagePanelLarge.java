@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 import se.viewer.image.containers.Image;
 import se.viewer.image.launcher.Client;
 
-public class LargeImagePanel extends JPanel {
+public class ImagePanelLarge extends JPanel {
 	
 	private static final long serialVersionUID = 4901797446281335927L;
 	
@@ -37,7 +37,7 @@ public class LargeImagePanel extends JPanel {
 		
 	private boolean justZoomed = false;
 	
-	public LargeImagePanel() {
+	public ImagePanelLarge() {
 		TotalMouseListener listener = new TotalMouseListener();
 		addMouseMotionListener(listener);
 		addMouseListener(listener);
@@ -119,7 +119,7 @@ public class LargeImagePanel extends JPanel {
 		display = scaled;
 		setPreferredSize(imageSize);
 		updateUI();
-		Client.instance().setFrameTitle(name + " - " + (int)(scaleToSpec*100) + "%");
+		Client.instance().setTitle(name + " - " + (int)(scaleToSpec*100) + "%");
 	}
 	
 	/**

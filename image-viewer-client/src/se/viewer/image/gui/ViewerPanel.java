@@ -25,21 +25,17 @@ import se.viewer.image.tokens.DeliverThumbnailsToken;
  * Class that represents a panel with a picture on it.
  * @author Harald Brege
  */
-public class ApplicationPanel extends JPanel{
+public class ViewerPanel extends JPanel implements ViewerInterface{
 
 	private static final long serialVersionUID = -5742181472489084300L;
 	
-	public static final String IMAGE = "image";
-	public static final String THUMBNAILS = "thumbnails";
-	public static final String LOADING = "loading";
-
 	private String displaying;
 	private Tag currentTag;
 	private Image source;
 	
-	private LargeImagePanel imagePanel;
+	private ImagePanelLarge imagePanel;
 	private SidePanel sidePanel;
-	private ThumbnailPanel thumbnailPanel;
+	private ThumbnailsPanel thumbnailPanel;
 	private JPanel rightPanel;
 	private CardLayout card;
 	
@@ -50,17 +46,17 @@ public class ApplicationPanel extends JPanel{
 	/**
 	 * Creates a new image view panel
 	 */
-	public ApplicationPanel() {
+	public ViewerPanel() {
 		//Setting up all components
 		setLayout(new GridBagLayout());
 		
 		sidePanel = new SidePanel(null);
 		sidePanel.setMinimumSize(new Dimension(600, 1));
 
-		imagePanel = new LargeImagePanel();
+		imagePanel = new ImagePanelLarge();
 		imagePanel.setVisible(true);
 		
-		thumbnailPanel = new ThumbnailPanel(null);
+		thumbnailPanel = new ThumbnailsPanel(null);
 		thumbnailPanel.setVisible(true);
 		
 		progress = new JProgressBar(0, 100);
@@ -160,6 +156,10 @@ public class ApplicationPanel extends JPanel{
 	//	IMAGE HANDLING METHODS
 	//---------------------------------------
 
+	/* (non-Javadoc)
+	 * @see se.viewer.image.gui.ViewerInterface#displayImage()
+	 */
+	@Override
 	public void displayImage() {
 		thumbnailPanel.clearDisplay();
 		displaying = IMAGE;
@@ -167,12 +167,20 @@ public class ApplicationPanel extends JPanel{
 		card.show(rightPanel, IMAGE);
 	}
 	
+	/* (non-Javadoc)
+	 * @see se.viewer.image.gui.ViewerInterface#setImage(se.viewer.image.containers.Image)
+	 */
+	@Override
 	public void setImage(Image image) {
 		source = image;
 		imagePanel.setImage(source);
 		sidePanel.setImage(source);
 	}
 	
+	/* (non-Javadoc)
+	 * @see se.viewer.image.gui.ViewerInterface#clearImage()
+	 */
+	@Override
 	public void clearImage() {
 		setImage(null);
 	}
@@ -181,6 +189,10 @@ public class ApplicationPanel extends JPanel{
 	//	TAG HANDLING METHODS
 	//---------------------------------------
 	
+	/* (non-Javadoc)
+	 * @see se.viewer.image.gui.ViewerInterface#setTags(java.util.ArrayList)
+	 */
+	@Override
 	public void setTags(ArrayList<Tag> tags) {
 		sidePanel.setTags(tags);
 	}
@@ -189,12 +201,20 @@ public class ApplicationPanel extends JPanel{
 	//	LOADING PANEL HANDLING METHODS
 	//---------------------------------------
 		
+	/* (non-Javadoc)
+	 * @see se.viewer.image.gui.ViewerInterface#displayLoading()
+	 */
+	@Override
 	public void displayLoading() {
 		thumbnailPanel.clearDisplay();
 		displaying = LOADING;
 		card.show(rightPanel, LOADING);
 	}
 	
+	/* (non-Javadoc)
+	 * @see se.viewer.image.gui.ViewerInterface#setUpdateProgress(java.lang.String, int)
+	 */
+	@Override
 	public void setUpdateProgress(String message, int percent) {
 		this.message.setText(message + " " + percent + "%");
 		progress.setValue(percent);
@@ -204,13 +224,21 @@ public class ApplicationPanel extends JPanel{
 	//	THUMBNAIL HANDLING METHODS
 	//---------------------------------------
 	
+	/* (non-Javadoc)
+	 * @see se.viewer.image.gui.ViewerInterface#displayThumbnails()
+	 */
+	@Override
 	public void displayThumbnails() {
 		imagePanel.setImage(null);
 		card.show(rightPanel, THUMBNAILS);
 		displaying = THUMBNAILS;
-		Client.instance().setFrameTitle(currentTag.getName());
+		Client.instance().setTitle(currentTag.getName());
 	}
 	
+	/* (non-Javadoc)
+	 * @see se.viewer.image.gui.ViewerInterface#setThumbnails(se.viewer.image.tokens.DeliverThumbnailsToken)
+	 */
+	@Override
 	public void setThumbnails(DeliverThumbnailsToken token) {		
 		if(!token.getTag().equals(currentTag)) {
 			if(displaying == THUMBNAILS)
