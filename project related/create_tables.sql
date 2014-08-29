@@ -35,6 +35,7 @@ CREATE TABLE User
    (userid INT UNIQUE AUTO_INCREMENT,
 	name VARCHAR(64),
 	password VARCHAR(64),
+	salt VARCHAR(64),
 	CONSTRAINT pk_users PRIMARY KEY(name)) ENGINE=InnoDB;
 
 -- -------------------------------

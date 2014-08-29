@@ -8,11 +8,13 @@ public class Tag implements Comparable<Tag>, Serializable{
 	private String name;
 	private String type;
 	private int count;
+	private int id;
 	
 	public Tag(String name, String type) {
 		this.name = name;
 		this.type = type;
 		this.count = 0;
+		this.id = 0;
 	}
 
 	public Tag(String name, String type, int count) {
@@ -39,6 +41,14 @@ public class Tag implements Comparable<Tag>, Serializable{
 	
 	public void setCount(int count) {
 		this.count = count;
+	}
+	
+	public int getID() {
+		return id;
+	}
+	
+	public void setID(int id) {
+		this.id = id;
 	}
 	
 	@Override
