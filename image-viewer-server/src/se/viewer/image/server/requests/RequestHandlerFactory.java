@@ -11,9 +11,7 @@ import se.viewer.image.tokens.Token;
  */
 public class RequestHandlerFactory {
 
-	private ClientConnection client;
-	private RequestHandler handler;
-	
+	private ClientConnection client;	
 	private LoginHandler login;
 	
 	/**
@@ -30,7 +28,12 @@ public class RequestHandlerFactory {
 	 * @return Operation success or failure
 	 */
 	public boolean handle(Token token) {
-		if(token != null) {
+		RequestHandler handler;
+		
+		if(token == null) {
+			handler = new DeniedHandler(new DeniedToken("Fuck you"), client);
+		}
+		else {
 			int request = token.message();
 
 			if(request == Messages.LOGIN) {
@@ -38,25 +41,21 @@ public class RequestHandlerFactory {
 					login = new LoginHandler(token, client);
 				handler = login;
 			}
-			else if(request == Messages.REGISTER_USER) {
+			else if(request == Messages.REGISTER_USER)
 				handler = new RegistrationHandler(token, client);
-			}
-			else if(request == Messages.LOGOUT) {
+			else if(request == Messages.LOGOUT) 
 				handler = new LogoutHandler(token, client);
-			}
-			else if(request == Messages.SEND_IMAGE) {
+			else if(request == Messages.SEND_IMAGE) 
 				handler = new SendImageHandler(token, client);
-			}
-			else if(request == Messages.SEND_THUMBNAILS) {
+			else if(request == Messages.SEND_THUMBNAILS) 
 				handler = new SendThumbnailsHandler(token, client);
-			}
-			else if(request == Messages.UPDATE_TAGS) {
+			else if(request == Messages.UPDATE_TAGS) 
 				handler = new UpdateTagsHandler(token, client);
-			}
+
+			else 
+				handler = new DeniedHandler(new DeniedToken("Fuck you"), client);
 		}
-		else {
-			handler = new DeniedHandler(new DeniedToken("Fuck you"), client);
-		}
+		
 		return handler.dealWithIt();
 	}
 	

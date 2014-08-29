@@ -1,4 +1,4 @@
-package se.viewer.image.database;
+package se.viewer.image.gallery;
 
 import java.util.ArrayList;
 

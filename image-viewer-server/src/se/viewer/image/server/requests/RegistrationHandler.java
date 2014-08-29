@@ -2,7 +2,6 @@ package se.viewer.image.server.requests;
 
 import java.io.IOException;
 
-import se.viewer.image.database.DatabaseSelector;
 import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.RegisterUserToken;
 import se.viewer.image.tokens.Token;
@@ -19,7 +18,7 @@ public class RegistrationHandler extends RequestHandler {
 
 	@Override
 	public boolean dealWithIt() {
-		boolean success = DatabaseSelector.getDB().registerUser(
+		boolean success = database.registerUser(
 				((RegisterUserToken) token).getUsername(), 
 				((RegisterUserToken) token).getPassword() );
 		try {

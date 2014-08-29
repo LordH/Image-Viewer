@@ -15,7 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
-import se.viewer.image.database.MessageLog;
+import se.viewer.image.logging.MessageLog;
 import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.Messages;
 

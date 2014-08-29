@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import se.viewer.image.containers.Tag;
 import se.viewer.image.containers.Thumbnail;
-import se.viewer.image.database.DatabaseSelector;
+import se.viewer.image.gallery.GallerySelector;
 import se.viewer.image.server.ClientConnection;
 import se.viewer.image.tokens.LoginFailedToken;
 import se.viewer.image.tokens.LoginSuccessToken;
@@ -35,14 +35,14 @@ public class LoginHandler extends RequestHandler {
 		
 		String user = request.getUser();
 		String password = request.getPassword();
-		boolean success = DatabaseSelector.getDB().authenticateUser(user, password);
+		boolean success = database.authenticateUser(user, password);
 		
 		if(success)
 			try {
 				client.authenticate(request.getUser());
+				gallery = GallerySelector.getGallery(client);
 				
-				ArrayList<Tag> tags = DatabaseSelector.getDB().getAllTags(request.getUser());
-				gallery = client.getImageServer();
+				ArrayList<Tag> tags = database.getAllTags();
 				ArrayList<Thumbnail> thumbs = gallery.getThumbnails(new Tag("tagme", "special"));
 				
 				stream.writeObject(new LoginSuccessToken(tags, thumbs));
@@ -53,7 +53,6 @@ public class LoginHandler extends RequestHandler {
 		else
 			try {
 				stream.writeObject(new LoginFailedToken("wrong credentials", left));
-				System.out.println("User login by " + user + " failed, " + left + " attempts left.");
 				left--;
 				if(left < 0)
 					client.blacklist();

@@ -1,4 +1,4 @@
-package se.viewer.image.database;
+package se.viewer.image.gallery;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -17,14 +17,17 @@ import javax.imageio.ImageIO;
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
 import se.viewer.image.containers.Thumbnail;
+import se.viewer.image.database.DatabaseSelector;
+import se.viewer.image.server.ClientConnection;
 
 public class ImageGallery implements GalleryInterface {
 	
 	private int mode;
 	
-	private String user;
+	private ClientConnection client;
 	private String imageDir;
 	private String thumbnailDir;
+	private String user;
 
 	private ImageList images;
 
@@ -32,10 +35,11 @@ public class ImageGallery implements GalleryInterface {
 	private String tag;
 	private int delivered;
 	
-	protected ImageGallery(String user) {
-		this.user = user;
+	protected ImageGallery(ClientConnection client) {
+		this.client = client;
+		user = client.getClientName();
 		images = new ImageList();
-		thumbnailDir = "C:\\Users\\Harald\\Pictures\\thumbnails\\" + user;
+		thumbnailDir = "C:\\Users\\Harald\\Pictures\\thumbnails\\" + client.getClientName();
 		
 		setMode(GalleryInterface.MODE_SERVER);
 	}
@@ -67,8 +71,8 @@ public class ImageGallery implements GalleryInterface {
 			return null;
 		
 		File file = new File(list.get(image));
-		byte[] data = getImageData(file);
-		ArrayList<Tag> tags = DatabaseSelector.getDB().getTags(image, user);
+		byte[] data = getFileData(file);
+		ArrayList<Tag> tags = DatabaseSelector.getDatabase(client).getTags(image);
 		delivered = 0;
 		
 		return new Image(image, data, tags);
@@ -86,7 +90,8 @@ public class ImageGallery implements GalleryInterface {
 		
 		//Establish new image list if it is a new tag
 		if(!tag.getName().equals( this.tag )) {
-			ArrayList<String> temp = DatabaseSelector.getDB().getTaggedList(tag.getName(), user);
+			ArrayList<String> temp = DatabaseSelector.getDatabase(client).
+					getTaggedList(tag.getName());
 			list.clear();
 			for(String image : temp)
 				list.add(images.getLocation(image), image);
@@ -102,8 +107,9 @@ public class ImageGallery implements GalleryInterface {
 			
 			String name = list.getName(delivered);
 			File file = new File(thumbnailDir, name + ".png");
-			byte[] img = getImageData(file);
-			ArrayList<Tag> tags = DatabaseSelector.getDB().getTags(name, user);
+			byte[] img = getFileData(file);
+			ArrayList<Tag> tags = DatabaseSelector.getDatabase(client).
+					getTags(name);
 			
 			Thumbnail temp = new Thumbnail(name, img, tags);
 			thumbnails.add(temp);
@@ -126,7 +132,7 @@ public class ImageGallery implements GalleryInterface {
 	 * @param file The file to be converted
 	 * @return The file data as a byte array
 	 */
-	private byte[] getImageData(File file) {
+	private byte[] getFileData(File file) {
 		try {
 			byte[] data = Files.readAllBytes(file.toPath());
 			return data;
@@ -177,7 +183,7 @@ public class ImageGallery implements GalleryInterface {
 	private void checkList() {
 		
 		//Check if images exist in the database and add them if they don't
-		ArrayList<String> old = DatabaseSelector.getDB().getAllImages(user);		
+		ArrayList<String> old = DatabaseSelector.getDatabase(client).getAllImages();		
 		
 		ArrayList<Image> toAdd = new ArrayList<Image>();
 		ArrayList<Tag> tags = new ArrayList<Tag>();
@@ -188,7 +194,7 @@ public class ImageGallery implements GalleryInterface {
 				toAdd.add(new Image(name, (byte[]) null, tags));
 		
 		if(!toAdd.isEmpty())
-			DatabaseSelector.getDB().add(toAdd, user);
+			DatabaseSelector.getDatabase(client).add(toAdd);
 		
 		//Check thumbnail directory and create new thumbnails as necessary
 		File file = new File(thumbnailDir);

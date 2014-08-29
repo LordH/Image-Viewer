@@ -1,4 +1,4 @@
-package se.viewer.image.database;
+package se.viewer.image.logging;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * Class for storing and retrieving clients' message logs
  * @author Harald Brege
  */
-public class MessageLog extends Observable {
+public class MessageLog extends Observable implements LogInterface {
 	
 	private ArrayList<String> log;
 	private File logFile;
@@ -30,15 +30,13 @@ public class MessageLog extends Observable {
 	//=======================================
 	//	MESSAGE LOGGING
 	//---------------------------------------
-	
-	/**
-	 * Called to inform the log which user is on the client
-	 * @param name Name of the user for the log
-	 */
+
+	@Override
 	public void userLoggedIn(String user) {
 		setupLogFile(user);
 	}
-	
+
+	@Override
 	public void newLogMessage(String message) {
 		Calendar time = Calendar.getInstance();
 		Date date = time.getTime();
@@ -51,7 +49,8 @@ public class MessageLog extends Observable {
 		notifyObservers(add);
 		clearChanged();
 	}
-	
+
+	@Override
 	public void shutdown() {
 		if(logFile != null)
 			try {
