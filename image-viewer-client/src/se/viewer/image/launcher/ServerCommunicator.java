@@ -90,24 +90,27 @@ public class ServerCommunicator implements Runnable{
 			//Attempt to connect to the server at the provided address
 			case CONNECT :
 				try {
-					if(socket != null)
-						socket.close();
-
 					socket = new Socket(host, port);
 					outStream = new ObjectOutputStream(socket.getOutputStream());
 					inStream = new ObjectInputStream(socket.getInputStream());
-
+					
+					Client.instance().connectionSuccess(true, host);
 				} catch (IOException e) {
-					e.printStackTrace();
+					Client.instance().connectionSuccess(false, host);
+					resetConnection();
 				}
 				break;
 				
 			//Attempt to disconnect from the currently connected server
 			case DISCONNECT :
-				try {			
-					if(socket.isClosed()) 
-						break;
-					
+				if(socket == null)
+					break;
+				else if(socket.isClosed()) {
+					resetConnection();
+					break;
+				}
+				
+				try {
 					outStream.writeObject(new LogoutToken());
 					System.out.println("Logged out");
 					outStream.close();
@@ -121,8 +124,12 @@ public class ServerCommunicator implements Runnable{
 				
 			//Attempt to login to the currently connected server
 			case LOGIN :
-				if(socket.isClosed())
+				if(socket == null)
 					break;
+				else if(socket.isClosed()) {
+					resetConnection();
+					break;
+				}
 
 				try {			
 					outStream.writeObject(getToken());
@@ -149,6 +156,13 @@ public class ServerCommunicator implements Runnable{
 			
 			//Attempt to create a new user
 			case REGISTER_USER :
+				if(socket == null)
+					break;
+				else if(socket.isClosed()) {
+					resetConnection();
+					break;
+				}
+				
 				try {
 					outStream.writeObject(getToken());
 					boolean success = (boolean) inStream.readObject();
@@ -163,8 +177,12 @@ public class ServerCommunicator implements Runnable{
 
 			//Attempt to get an image from the server	
 			case GET_IMAGE :
-				if(socket.isClosed())
+				if(socket == null)
 					break;
+				else if(socket.isClosed()) {
+					resetConnection();
+					break;
+				}
 				
 				Client.instance().deliverUpdateProgress(Client.IMAGE_DOWNLOAD_STARTED, 0);
 				try {
@@ -176,12 +194,12 @@ public class ServerCommunicator implements Runnable{
 						image = ((DeliverImageToken) token).getImage();
 					else {
 						System.err.println("Image download failed");
-						break;
 					}
 					Client.instance().deliverImage(image);
 					
 				} catch (IOException e) {
 					e.printStackTrace();
+					resetConnection();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -189,8 +207,13 @@ public class ServerCommunicator implements Runnable{
 				
 			//Attempt to get thumbnails from the server
 			case GET_THUMBNAILS :
-				if(socket.isClosed())
+				if(socket == null)
 					break;
+				else if(socket.isClosed()) {
+					resetConnection();
+					break;
+				}
+				
 				try {
 					outStream.writeObject(getToken());
 					Token answer = (Token) inStream.readObject();
@@ -203,6 +226,7 @@ public class ServerCommunicator implements Runnable{
 					
 				} catch (IOException e) {
 					e.printStackTrace();
+					resetConnection();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -210,8 +234,12 @@ public class ServerCommunicator implements Runnable{
 				
 			//Attempt to update the tags for an image
 			case UPDATE_TAGS :
-				if(socket.isClosed())
+				if(socket == null)
 					break;
+				else if(socket.isClosed()) {
+					resetConnection();
+					break;
+				}
 				
 				try {
 					outStream.writeObject(getToken());
@@ -220,30 +248,17 @@ public class ServerCommunicator implements Runnable{
 					
 				} catch (IOException e) {
 					e.printStackTrace();
+					resetConnection();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 				break;
-//				
-//			case SEARCH_QUERY :
-//				if(socket.isClosed())
-//					break;
-//				
-//				try {
-//					outStream.writeObject(getToken());
-//					Token answer = (Token) inStream.readObject();
-//					
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				} catch (ClassNotFoundException e) {
-//					e.printStackTrace();
-//				}
 			}
 		}
 	}
 	
 	//=======================================
-	//	PUBLIC REQUESTS
+	//	SERVER REQUESTS
 	//---------------------------------------
 	
 	public void shutdown() {
@@ -300,6 +315,14 @@ public class ServerCommunicator implements Runnable{
 	}
 	
 	//=======================================
+	//	INFORMATION METHODS
+	//---------------------------------------
+	
+	public boolean isConnected() {
+		return socket != null;
+	}
+	
+	//=======================================
 	//	PRIVATE METHODS
 	//---------------------------------------
 	
@@ -312,5 +335,13 @@ public class ServerCommunicator implements Runnable{
 	
 	private Token getToken() {
 		return tokens.removeFirst();
+	}
+	
+	private void resetConnection() {
+		socket = null;
+		outStream = null;
+		inStream = null;
+		
+		Client.instance().loginMode();
 	}
 }

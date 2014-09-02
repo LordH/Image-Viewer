@@ -20,12 +20,12 @@ public interface GUIHandlerInterface {
 	 * Called to set the message displayed in the login frame
 	 * @param message The message to be displayed
 	 */
-	public abstract void setMessage(String message);
+	public abstract void loginMessage(String message);
 	
 	/**
 	 * Called to inform the login frame of login success
 	 */
-	public abstract void loginSuccess();
+	public abstract void loginSuccessful();
 	
 	//=======================================
 	//	VIEWING MODE

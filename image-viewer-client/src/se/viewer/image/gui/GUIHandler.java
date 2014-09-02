@@ -1,6 +1,5 @@
 package se.viewer.image.gui;
 
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -80,29 +79,31 @@ public class GUIHandler implements GUIHandlerInterface {
 	public void loginMode() {
 		if(login == null)
 			login = new LoginFrame();
+		
+		frame.setVisible(false);
+		login.setVisible(true);
 	}
 
 	@Override
-	public void setMessage(String message) {
+	public void loginMessage(String message) {
 		login.setMessage(message);
 	}
 
 	@Override
-	public void loginSuccess() {
+	public void loginSuccessful() {
 		login.success();
 	}
 	
 	//=======================================
-	//	VIEWING MODE
+	//	VIEWER MODE
 	//---------------------------------------
 
 	@Override
 	public ViewerInterface viewerMode() {
-		//Setting up the content pane, picture and scroll pane 
-		Container content = frame.getContentPane();
 		ViewerPanel imagePanel = new ViewerPanel();
 		
-		content.add(imagePanel);
+		frame.getContentPane().removeAll();
+		frame.getContentPane().add(imagePanel);
 		frame.pack();
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setVisible(true);

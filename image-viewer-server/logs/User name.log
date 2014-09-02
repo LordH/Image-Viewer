@@ -1,26 +1,6 @@
-[2014-08-29 03:21:59] +++ USER User name LOGGED IN FROM /192.168.1.3 +++
-[2014-08-29 03:22:07] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:22:10] Request received from USER NAME/192.168.1.3: +++ SEND THUMBNAILS +++
-[2014-08-29 03:22:11] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:22:13] Request received from USER NAME/192.168.1.3: +++ UPDATE TAGS +++
-[2014-08-29 03:22:15] Request received from USER NAME/192.168.1.3: +++ SEND THUMBNAILS +++
-[2014-08-29 03:22:18] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:22:20] Request received from USER NAME/192.168.1.3: +++ SEND THUMBNAILS +++
-[2014-08-29 03:22:22] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:22:25] Request received from USER NAME/192.168.1.3: +++ SEND THUMBNAILS +++
-[2014-08-29 03:22:26] Request received from USER NAME/192.168.1.3: +++ SEND THUMBNAILS +++
-[2014-08-29 03:22:27] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:22:29] Request received from USER NAME/192.168.1.3: +++ SEND THUMBNAILS +++
-[2014-08-29 03:22:29] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:22:31] Request received from USER NAME/192.168.1.3: +++ SEND THUMBNAILS +++
-[2014-08-29 03:22:33] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:22:35] Request received from USER NAME/192.168.1.3: +++ SEND THUMBNAILS +++
-[2014-08-29 03:22:37] Request received from USER NAME/192.168.1.3: +++ SEND THUMBNAILS +++
-[2014-08-29 03:22:38] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:22:40] Request received from USER NAME/192.168.1.3: +++ SEND THUMBNAILS +++
-[2014-08-29 03:22:41] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:22:43] Request received from USER NAME/192.168.1.3: +++ SEND THUMBNAILS +++
-[2014-08-29 03:22:43] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:22:57] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:22:59] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
-[2014-08-29 03:23:02] Request received from USER NAME/192.168.1.3: +++ LOGOUT +++
+[2014-09-02 08:46:14] +++ USER User name LOGGED IN FROM /192.168.1.3 +++
+[2014-09-02 08:46:16] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
+[2014-09-02 08:46:16] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
+[2014-09-02 08:46:18] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
+[2014-09-02 08:46:19] Request received from USER NAME/192.168.1.3: +++ SEND IMAGE +++
+[2014-09-02 08:46:20] Request received from USER NAME/192.168.1.3: +++ LOGOUT +++

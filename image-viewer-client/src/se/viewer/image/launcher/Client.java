@@ -46,7 +46,7 @@ public class Client {
 	 * Runs the main view of the application
 	 */
 	public void start() {
-		ServerCommunicator.instance().connect("192.168.1.3", 2106);
+//		ServerCommunicator.instance().connect("192.168.1.3", 2106);
 		loginMode();
 	}
 	
@@ -97,15 +97,27 @@ public class Client {
 	//---------------------------------------
 	
 	/**
+	 * Called to inform the user of server connection success or failure
+	 * @param success If a connection to the server has been established or not
+	 * @param host The address of the host
+	 */
+	public void connectionSuccess(boolean success, String host) {
+		if(success)
+			factory.loginMessage("Connected to server at " + host);
+		else
+			factory.loginMessage("Could not connect to server at " + host);
+	}
+	
+	/**
 	 * Called to indicate whether the user has successfully logged in to the server or not
 	 * @param success Login success or failure
 	 * @param attemptsLeft How many more attempts to log in can be made
 	 */
 	public void loginSuccess(boolean success, int attemptsLeft) {
 		if(!success)
-			factory.setMessage("Login failed! " + attemptsLeft + " attempts left.");
+			factory.loginMessage("Login failed! " + attemptsLeft + " attempts left.");
 		else {
-			factory.loginSuccess();
+			factory.loginSuccessful();
 			viewerMode();
 		}
 	}
@@ -116,9 +128,9 @@ public class Client {
 	 */
 	public void registrationSuccess(boolean success) {
 		if(success)
-			factory.setMessage("Successfully created new user!");
+			factory.loginMessage("Successfully created new user!");
 		else
-			factory.setMessage("Failed to create user!");
+			factory.loginMessage("Failed to create user!");
 	}
 
 	/**
