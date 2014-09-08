@@ -1,4 +1,4 @@
-package se.viewer.image.gui;
+package se.viewer.image.gui.viewer;
 
 import java.awt.CardLayout;
 import java.awt.Color;

@@ -1,4 +1,4 @@
-package se.viewer.image.gui;
+package se.viewer.image.gui.login;
 
 public interface LoginInterface {
 
@@ -7,10 +7,7 @@ public interface LoginInterface {
 	 * @param message The message to be shown
 	 */
 	public abstract void setMessage(String message);
-
-	/**
-	 * Called when the server confirms successful login do dispose the login frame
-	 */
-	public abstract void success();
+	
+	public abstract void setVisible(boolean b);
 
 }

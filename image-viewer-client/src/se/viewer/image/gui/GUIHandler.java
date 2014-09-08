@@ -14,6 +14,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import se.viewer.image.gui.login.LoginFrame2;
+import se.viewer.image.gui.login.LoginInterface;
+import se.viewer.image.gui.viewer.ViewerInterface;
+import se.viewer.image.gui.viewer.ViewerPanel;
 import se.viewer.image.launcher.ServerCommunicator;
 
 /**
@@ -23,7 +27,7 @@ import se.viewer.image.launcher.ServerCommunicator;
 public class GUIHandler implements GUIHandlerInterface {
 	
 	private JFrame frame;
-	private LoginFrame login;
+	private LoginInterface login;
 	
 	/**
 	 * Creates a new GUI handler 
@@ -78,7 +82,7 @@ public class GUIHandler implements GUIHandlerInterface {
 	@Override
 	public void loginMode() {
 		if(login == null)
-			login = new LoginFrame();
+			login = new LoginFrame2();
 		
 		frame.setVisible(false);
 		login.setVisible(true);
@@ -91,7 +95,7 @@ public class GUIHandler implements GUIHandlerInterface {
 
 	@Override
 	public void loginSuccessful() {
-		login.success();
+		login.setVisible(false);
 	}
 	
 	//=======================================

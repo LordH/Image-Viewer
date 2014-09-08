@@ -1,5 +1,7 @@
 package se.viewer.image.gui;
 
+import se.viewer.image.gui.viewer.ViewerInterface;
+
 
 /**
  * An interface for classes handling the GUI

@@ -1,4 +1,4 @@
-package se.viewer.image.gui;
+package se.viewer.image.gui.login;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -26,7 +26,7 @@ import se.viewer.image.launcher.ServerCommunicator;
  * Class for displaying the login prompt when the application launches
  * @author Harald Brege
  */
-public class LoginFrame extends JFrame implements LoginInterface {
+public class LoginFrame1 extends JFrame implements LoginInterface {
 	
 	private static final long serialVersionUID = -3060670952519287670L;
 	
@@ -43,7 +43,7 @@ public class LoginFrame extends JFrame implements LoginInterface {
 	/**
 	 * Creates a new login frame
 	 */
-	public LoginFrame() {
+	public LoginFrame1() {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		setLayout(new GridBagLayout());
 		setMinimumSize(new Dimension(400, 300));
@@ -216,12 +216,7 @@ public class LoginFrame extends JFrame implements LoginInterface {
 	public void setMessage(String message) {
 		this.message.setText(message);
 	}
-	
-	@Override
-	public void success() {
-		setVisible(false);
-	}
-	
+		
 	//=======================================
 	//	INTERNAL CLASSES
 	//---------------------------------------
@@ -240,7 +235,7 @@ public class LoginFrame extends JFrame implements LoginInterface {
 			}
 		}
 	}
-
+	
 	private class registerListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {

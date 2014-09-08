@@ -1,4 +1,4 @@
-package se.viewer.image.gui;
+package se.viewer.image.gui.viewer;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -31,7 +31,8 @@ public class ImagePanelSmall extends JPanel {
 			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));}
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {

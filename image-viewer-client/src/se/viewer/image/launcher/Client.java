@@ -6,7 +6,7 @@ import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
 import se.viewer.image.gui.GUIHandlerInterface;
 import se.viewer.image.gui.GUISelector;
-import se.viewer.image.gui.ViewerInterface;
+import se.viewer.image.gui.viewer.ViewerInterface;
 import se.viewer.image.tokens.DeliverThumbnailsToken;
 
 /**

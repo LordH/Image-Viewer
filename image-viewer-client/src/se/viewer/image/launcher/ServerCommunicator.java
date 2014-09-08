@@ -3,9 +3,12 @@ package se.viewer.image.launcher;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Observable;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
@@ -26,35 +29,33 @@ import se.viewer.image.tokens.UpdateTagsToken;
  * Class for handling communications with the server.
  * @author Harald Brege
  */
-public class ServerCommunicator implements Runnable{
+public class ServerCommunicator extends Observable implements Runnable {
 
-	private static final int WAIT = 0;
 	private static final int SHUTDOWN = 1;
 	private static final int CONNECT = 2;
 	private static final int DISCONNECT = 5;
 	private static final int LOGIN = 4;
 	private static final int REGISTER_USER = 3;
-	
+
 	private static final int GET_IMAGE = 6;
 	private static final int GET_THUMBNAILS = 7;
 	private static final int UPDATE_TAGS = 8;
-//	private static final int SEARCH_QUERY = 9;
-	
+
 	private static ServerCommunicator instance;
 	private static Thread thread;
-	
+
 	private String host;
 	private int port;
 	private Socket socket; 
 	private ObjectInputStream inStream;
 	private ObjectOutputStream outStream;
-	
-	private LinkedList<Integer> tasks = new LinkedList<Integer>();
+
+	private LinkedBlockingQueue<Integer> tasks = new LinkedBlockingQueue<Integer>();
 	private LinkedList<Token> tokens = new LinkedList<Token>();
 	private boolean run = true;
-	
+
 	private ServerCommunicator() {}
-	
+
 	/**
 	 * Called to get the singleton instance of the server handler
 	 * @return The instance
@@ -72,276 +73,306 @@ public class ServerCommunicator implements Runnable{
 	@Override
 	public void run() {
 		while (run) {
-			switch (getTask()) {
-			//Just wait for some time if there are no requests
-			case WAIT :
-				try {
-					Thread.sleep(0);
-				} catch (InterruptedException e) {
-					
-				}
-				break;
+			int next;
+			try {
+				next = tasks.take();
+				System.out.println("going to " + next);
 				
-			//Shut down the server communicator
-			case SHUTDOWN :
-				run = false;
-				break;
-			
-			//Attempt to connect to the server at the provided address
-			case CONNECT :
-				try {
-					socket = new Socket(host, port);
-					outStream = new ObjectOutputStream(socket.getOutputStream());
-					inStream = new ObjectInputStream(socket.getInputStream());
-					
-					Client.instance().connectionSuccess(true, host);
-				} catch (IOException e) {
-					Client.instance().connectionSuccess(false, host);
-					resetConnection();
-				}
-				break;
-				
-			//Attempt to disconnect from the currently connected server
-			case DISCONNECT :
-				if(socket == null)
-					break;
-				else if(socket.isClosed()) {
-					resetConnection();
-					break;
-				}
-				
-				try {
-					outStream.writeObject(new LogoutToken());
-					System.out.println("Logged out");
-					outStream.close();
-					inStream.close();
-					socket.close();
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				break;
-				
-			//Attempt to login to the currently connected server
-			case LOGIN :
-				if(socket == null)
-					break;
-				else if(socket.isClosed()) {
-					resetConnection();
-					break;
-				}
+				switch (next) {
 
-				try {			
-					outStream.writeObject(getToken());
-					Token answer = (Token) inStream.readObject();
-					
-					if(answer.message() == Messages.LOGIN_SUCCESS) {
-						LoginSuccessToken t = (LoginSuccessToken) answer;
-						System.out.println("Login successful.");
-						Client.instance().loginSuccess(true, 0);
-						Client.instance().deliverThumbnails(t.getThumbs());
-						Client.instance().deliverTags(t.getTags());
-					}
-					else if(answer.message() == Messages.LOGIN_FAILURE) {
-						Client.instance().loginSuccess(false, 
-								((LoginFailedToken) answer).attemptsLeft());
-					}
+				//Shut down the server communicator
+				case SHUTDOWN :
+					run = false;
+					break;
 
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-				break;
-			
-			//Attempt to create a new user
-			case REGISTER_USER :
-				if(socket == null)
-					break;
-				else if(socket.isClosed()) {
-					resetConnection();
-					break;
-				}
-				
-				try {
-					outStream.writeObject(getToken());
-					boolean success = (boolean) inStream.readObject();
-					Client.instance().registrationSuccess(success);
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-				break;
+				//Attempt to connect to the server at the provided address
+				case CONNECT :
+					try {
+						socket = new Socket();
+						socket.connect(new InetSocketAddress(host, port), 2000);
+						outStream = new ObjectOutputStream(socket.getOutputStream());
+						inStream = new ObjectInputStream(socket.getInputStream());
+						
+						setChanged();
+						notifyObservers(true);
+						clearChanged();
+						//					Client.instance().connectionSuccess(true, host);
+					} catch (IOException e) {
+						//					Client.instance().connectionSuccess(false, host);
+						e.printStackTrace();
+						resetConnection();
 
-			//Attempt to get an image from the server	
-			case GET_IMAGE :
-				if(socket == null)
-					break;
-				else if(socket.isClosed()) {
-					resetConnection();
-					break;
-				}
-				
-				Client.instance().deliverUpdateProgress(Client.IMAGE_DOWNLOAD_STARTED, 0);
-				try {
-					Image image = null;					
-					outStream.writeObject(getToken());
-					Token token = (Token) inStream.readObject();
-					
-					if(token.message() == Messages.DELIVER_IMAGE)
-						image = ((DeliverImageToken) token).getImage();
-					else {
-						System.err.println("Image download failed");
+						setChanged();
+						notifyObservers(false);
+						clearChanged();
 					}
-					Client.instance().deliverImage(image);
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-					resetConnection();
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-				break;
-				
-			//Attempt to get thumbnails from the server
-			case GET_THUMBNAILS :
-				if(socket == null)
 					break;
-				else if(socket.isClosed()) {
-					resetConnection();
-					break;
-				}
-				
-				try {
-					outStream.writeObject(getToken());
-					Token answer = (Token) inStream.readObject();
-					
-					if(answer.message() != Messages.DELIVER_THUMBNAILS) {
-						System.err.println("Thumbnail download failed");
+
+				//Attempt to disconnect from the currently connected server
+				case DISCONNECT :
+					if(socket == null)
+						break;
+					else if(socket.isClosed()) {
+						resetConnection();
 						break;
 					}
-					Client.instance().deliverThumbnails(((DeliverThumbnailsToken)answer));
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-					resetConnection();
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-				break;
-				
-			//Attempt to update the tags for an image
-			case UPDATE_TAGS :
-				if(socket == null)
+
+					try {
+						outStream.writeObject(new LogoutToken());
+						System.out.println("Logged out");
+						outStream.close();
+						inStream.close();
+						socket.close();
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 					break;
-				else if(socket.isClosed()) {
-					resetConnection();
+
+				//Attempt to login to the currently connected server
+				case LOGIN :
+					if(socket == null)
+						break;
+					else if(socket.isClosed()) {
+						resetConnection();
+						break;
+					}
+
+					try {			
+						outStream.writeObject(getToken());
+						Token answer = (Token) inStream.readObject();
+
+						if(answer.message() == Messages.LOGIN_SUCCESS) {
+							LoginSuccessToken t = (LoginSuccessToken) answer;
+							System.out.println("Login successful.");
+							Client.instance().loginSuccess(true, 0);
+							Client.instance().deliverThumbnails(t.getThumbs());
+							Client.instance().deliverTags(t.getTags());
+						}
+						else if(answer.message() == Messages.LOGIN_FAILURE) {
+							Client.instance().loginSuccess(false, 
+									((LoginFailedToken) answer).attemptsLeft());
+						}
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+					break;
+
+				//Attempt to create a new user
+				case REGISTER_USER :
+					if(socket == null)
+						break;
+					else if(socket.isClosed()) {
+						resetConnection();
+						break;
+					}
+
+					try {
+						outStream.writeObject(getToken());
+						boolean success = (boolean) inStream.readObject();
+						Client.instance().registrationSuccess(success);
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+					break;
+
+				//Attempt to get an image from the server	
+				case GET_IMAGE :
+					if(socket == null)
+						break;
+					else if(socket.isClosed()) {
+						resetConnection();
+						break;
+					}
+
+					Client.instance().deliverUpdateProgress(Client.IMAGE_DOWNLOAD_STARTED, 0);
+					try {
+						Image image = null;					
+						outStream.writeObject(getToken());
+						Token token = (Token) inStream.readObject();
+
+						if(token.message() == Messages.DELIVER_IMAGE)
+							image = ((DeliverImageToken) token).getImage();
+						else {
+							System.err.println("Image download failed");
+						}
+						Client.instance().deliverImage(image);
+
+					} catch (IOException e) {
+						e.printStackTrace();
+						resetConnection();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+					break;
+
+				//Attempt to get thumbnails from the server
+				case GET_THUMBNAILS :
+					if(socket == null)
+						break;
+					else if(socket.isClosed()) {
+						resetConnection();
+						break;
+					}
+
+					try {
+						outStream.writeObject(getToken());
+						Token answer = (Token) inStream.readObject();
+
+						if(answer.message() != Messages.DELIVER_THUMBNAILS) {
+							System.err.println("Thumbnail download failed");
+							break;
+						}
+						Client.instance().deliverThumbnails(((DeliverThumbnailsToken)answer));
+
+					} catch (IOException e) {
+						e.printStackTrace();
+						resetConnection();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+					break;
+
+				//Attempt to update the tags for an image
+				case UPDATE_TAGS :
+					if(socket == null)
+						break;
+					else if(socket.isClosed()) {
+						resetConnection();
+						break;
+					}
+
+					try {
+						outStream.writeObject(getToken());
+						ArrayList<Tag> tags = (ArrayList<Tag>) inStream.readObject();
+						Client.instance().deliverTags(tags);
+
+					} catch (IOException e) {
+						e.printStackTrace();
+						resetConnection();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
 					break;
 				}
 				
-				try {
-					outStream.writeObject(getToken());
-					ArrayList<Tag> tags = (ArrayList<Tag>) inStream.readObject();
-					Client.instance().deliverTags(tags);
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-					resetConnection();
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-				break;
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
 			}
 		}
 	}
-	
+
 	//=======================================
 	//	SERVER REQUESTS
 	//---------------------------------------
-	
+
 	public void shutdown() {
-		tasks.addLast(SHUTDOWN);
-		thread.interrupt();
+		try {
+			tasks.put(SHUTDOWN);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void connect(String host, int port) {
 		this.host = host;
 		this.port = port;
-		tasks.addLast(CONNECT);
-		thread.interrupt();
+		try {
+			tasks.put(CONNECT);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void disconnect() {
-		tasks.addLast(DISCONNECT);
-		thread.interrupt();
+		try {
+			tasks.put(DISCONNECT);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void login(String username, String password) {
 		tokens.addLast(new LoginToken(username, password));
-		tasks.addLast(LOGIN);
-		thread.interrupt();
+		try {
+			tasks.put(LOGIN);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void registerUser(String username, String password) {
 		tokens.add(new RegisterUserToken(username, password));
-		tasks.addLast(REGISTER_USER);
-		thread.interrupt();
+		try {
+			tasks.put(REGISTER_USER);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void updateTags(String image, ArrayList<Tag> tags) {
 		tokens.addLast(new UpdateTagsToken(image, tags));
-		tasks.addLast(UPDATE_TAGS);
-		thread.interrupt();
+		try {
+			tasks.put(UPDATE_TAGS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void getImage(int dir) {
 		tokens.addLast(new SendImageToken(dir));
-		tasks.addLast(GET_IMAGE);
-		thread.interrupt();
+		try {
+			tasks.put(GET_IMAGE);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void getImage(String image) {
 		tokens.addLast(new SendImageToken(image));
-		tasks.addLast(GET_IMAGE);
-		thread.interrupt();
+		try {
+			tasks.put(GET_IMAGE);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void getThumbnails(Tag tag) {
 		tokens.addLast(new SendThumbnailsToken(tag));
-		tasks.addLast(GET_THUMBNAILS);
-		thread.interrupt();
+		try {
+			tasks.put(GET_THUMBNAILS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	//=======================================
 	//	INFORMATION METHODS
 	//---------------------------------------
-	
+
 	public boolean isConnected() {
 		return socket != null;
 	}
-	
+
 	//=======================================
 	//	PRIVATE METHODS
 	//---------------------------------------
 	
-	private int getTask() {
-		if(!tasks.isEmpty())
-			return tasks.removeFirst();
-		else
-			return WAIT;
-	}
-	
 	private Token getToken() {
 		return tokens.removeFirst();
 	}
-	
+
 	private void resetConnection() {
 		socket = null;
 		outStream = null;
 		inStream = null;
-		
+
 		Client.instance().loginMode();
 	}
 }
