@@ -48,6 +48,7 @@ public class LoginPanel extends JPanel implements Observer {
 		username.setFont(Style.FONT_TEXTFIELD);
 		username.setForeground(Color.GRAY);
 		username.setText("User name");
+		username.addMouseListener(new FieldListener(username));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.weightx = 1;
@@ -58,6 +59,7 @@ public class LoginPanel extends JPanel implements Observer {
 		password.setFont(Style.FONT_TEXTFIELD);
 		password.setForeground(Color.GRAY);
 		password.setText("Password");
+		password.addMouseListener(new FieldListener(password));
 		c.gridy = 1;
 		add(password, c);
 		
@@ -146,12 +148,16 @@ public class LoginPanel extends JPanel implements Observer {
 	//	LISTENER CLASSES
 	//---------------------------------------
 
+	/**
+	 * Mouse listener for the labels at the bottom
+	 * @author Harald Brege
+	 */
 	private class LabelMouse implements MouseListener {
 
 		JLabel label;
 		String purpose;
 		
-		LabelMouse(JLabel label, String purpose) {
+		public LabelMouse(JLabel label, String purpose) {
 			this.label = label;
 			this.purpose = purpose;
 		}
@@ -163,7 +169,7 @@ public class LoginPanel extends JPanel implements Observer {
 			}
 			else if(purpose == "forgot") {
 				label.setForeground(Color.RED);
-				label.setText("UR FUCKED KID!");
+				label.setText("UR FUKKED KID!");
 			}
 		}
 
@@ -186,6 +192,39 @@ public class LoginPanel extends JPanel implements Observer {
 
 		@Override
 		public void mouseReleased(MouseEvent e) {}
+		
+	}
+	
+	/**
+	 * Mouse listener for the user name and password fields
+	 * @author Harald Brege
+	 */
+	private class FieldListener implements MouseListener {
+
+		private JTextField field;
+		
+		public FieldListener(JTextField parent) {
+			field = parent;
+		}
+		
+		@Override
+		public void mouseClicked(MouseEvent arg0) {
+			field.selectAll();
+			if(field.getForeground() == Color.GRAY)
+				field.setForeground(Color.BLACK);
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) {}
+
+		@Override
+		public void mouseExited(MouseEvent arg0) {}
+
+		@Override
+		public void mousePressed(MouseEvent arg0) {}
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) {}
 		
 	}
 }

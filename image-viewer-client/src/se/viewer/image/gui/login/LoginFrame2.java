@@ -92,7 +92,7 @@ public class LoginFrame2 extends JFrame implements LoginInterface {
 
 	@Override
 	public void setMessage(String message) {
-		
+		System.out.println(message);
 	}
 
 	/**
