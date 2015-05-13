@@ -24,8 +24,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-import se.viewer.image.gui.Style;
-import se.viewer.image.launcher.ServerCommunicator;
+import se.viewer.image.communication.ServerCommunicator;
+import se.viewer.image.gui.style.Style;
 
 public class LoginPanel extends JPanel implements Observer {
 	

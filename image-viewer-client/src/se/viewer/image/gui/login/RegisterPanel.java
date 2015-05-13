@@ -22,8 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import se.viewer.image.gui.Style;
-import se.viewer.image.launcher.ServerCommunicator;
+import se.viewer.image.communication.ServerCommunicator;
+import se.viewer.image.gui.style.Style;
 
 /**
  * Class that handles the register user panel for the login frame

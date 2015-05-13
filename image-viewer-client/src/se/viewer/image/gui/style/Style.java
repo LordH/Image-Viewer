@@ -1,4 +1,4 @@
-package se.viewer.image.gui;
+package se.viewer.image.gui.style;
 
 import java.awt.Font;
 

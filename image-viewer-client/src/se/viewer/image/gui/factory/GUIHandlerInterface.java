@@ -1,4 +1,4 @@
-package se.viewer.image.gui;
+package se.viewer.image.gui.factory;
 
 import se.viewer.image.gui.viewer.ViewerInterface;
 

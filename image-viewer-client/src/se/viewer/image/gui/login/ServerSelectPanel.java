@@ -14,8 +14,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import se.viewer.image.gui.Style;
-import se.viewer.image.launcher.ServerCommunicator;
+import se.viewer.image.communication.ServerCommunicator;
+import se.viewer.image.gui.style.Style;
 
 /**
  * Class that handles a panel with server selection for the login frame

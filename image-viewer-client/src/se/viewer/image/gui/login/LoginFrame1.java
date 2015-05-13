@@ -20,7 +20,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import se.viewer.image.launcher.ServerCommunicator;
+import se.viewer.image.communication.ServerCommunicator;
 
 /**
  * Class for displaying the login prompt when the application launches

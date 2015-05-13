@@ -1,4 +1,4 @@
-package se.viewer.image.launcher;
+package se.viewer.image.communication;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,6 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
+import se.viewer.image.launcher.Client;
 import se.viewer.image.tokens.DeliverImageToken;
 import se.viewer.image.tokens.DeliverThumbnailsToken;
 import se.viewer.image.tokens.LoginFailedToken;

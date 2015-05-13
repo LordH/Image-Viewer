@@ -1,4 +1,4 @@
-package se.viewer.image.gui;
+package se.viewer.image.gui.factory;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -14,11 +14,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import se.viewer.image.communication.ServerCommunicator;
 import se.viewer.image.gui.login.LoginFrame2;
 import se.viewer.image.gui.login.LoginInterface;
 import se.viewer.image.gui.viewer.ViewerInterface;
 import se.viewer.image.gui.viewer.ViewerPanel;
-import se.viewer.image.launcher.ServerCommunicator;
 
 /**
  * Class for handling the GUI components for the Image Viewer client
