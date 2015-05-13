@@ -23,6 +23,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import se.viewer.image.communication.ServerCommunicator;
+import se.viewer.image.gui.handlers.LoginHandler;
 import se.viewer.image.gui.style.Style;
 
 /**
@@ -33,14 +34,14 @@ public class RegisterPanel extends JPanel implements Observer {
 	
 	private static final long serialVersionUID = 2331036124156385298L;
 	
-	private LoginFrame parent;
+	private LoginHandler parent;
 	private boolean connected;
 
 	private JTextField username;
 	private JPasswordField password1;
 	private JPasswordField password2;
 	
-	public RegisterPanel(LoginFrame parent) {
+	public RegisterPanel(LoginHandler parent) {
 		ServerCommunicator.instance().addObserver(this);
 		this.parent = parent;
 		connected = false;
