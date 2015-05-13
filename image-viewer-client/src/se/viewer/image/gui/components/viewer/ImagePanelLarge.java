@@ -1,4 +1,4 @@
-package se.viewer.image.gui.viewer;
+package se.viewer.image.gui.components.viewer;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -18,8 +18,8 @@ import javax.imageio.ImageReader;
 import javax.imageio.event.IIOReadProgressListener;
 import javax.swing.JPanel;
 
+import se.viewer.image.client.Client;
 import se.viewer.image.containers.Image;
-import se.viewer.image.launcher.Client;
 
 public class ImagePanelLarge extends JPanel {
 	
@@ -119,7 +119,7 @@ public class ImagePanelLarge extends JPanel {
 		display = scaled;
 		setPreferredSize(imageSize);
 		updateUI();
-		Client.instance().setTitle(name + " - " + (int)(scaleToSpec*100) + "%");
+//		Client.instance().setTitle(name + " - " + (int)(scaleToSpec*100) + "%");
 	}
 	
 	/**

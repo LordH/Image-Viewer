@@ -1,4 +1,4 @@
-package se.viewer.image.gui.viewer;
+package se.viewer.image.gui.components.viewer;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import se.viewer.image.launcher.Client;
+import se.viewer.image.client.Client;
 
 public class ImagePanelSmall extends JPanel {
 	

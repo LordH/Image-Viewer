@@ -1,4 +1,4 @@
-package se.viewer.image.gui.login;
+package se.viewer.image.gui.components.login;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -33,14 +33,14 @@ public class RegisterPanel extends JPanel implements Observer {
 	
 	private static final long serialVersionUID = 2331036124156385298L;
 	
-	private LoginFrame2 parent;
+	private LoginFrame parent;
 	private boolean connected;
 
 	private JTextField username;
 	private JPasswordField password1;
 	private JPasswordField password2;
 	
-	public RegisterPanel(LoginFrame2 parent) {
+	public RegisterPanel(LoginFrame parent) {
 		ServerCommunicator.instance().addObserver(this);
 		this.parent = parent;
 		connected = false;

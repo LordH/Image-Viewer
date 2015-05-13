@@ -1,4 +1,4 @@
-package se.viewer.image.gui.login;
+package se.viewer.image.gui.components.login;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -16,18 +16,18 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 /**
- * Improved implementation of the login frame interface.
  * Handles logging in to servers and registering new users.
  * @author Harald Brege
  */
-public class LoginFrame2 extends JFrame implements LoginInterface {
+public class LoginFrame extends JFrame implements LoginFrameInterface  {
 	
 	private static final long serialVersionUID = 6273156355241808454L;
 	
 	private JPanel cardPanel;
 	private CardLayout card;
 	
-	public LoginFrame2() {
+	@Override
+	public boolean setup() {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		setMinimumSize(new Dimension(300, 520));
 		setLocation((screen.width-getSize().width) / 2, (screen.height-getSize().height) / 2);
@@ -83,16 +83,26 @@ public class LoginFrame2 extends JFrame implements LoginInterface {
 		
 		//Setting up display
 		card.show(cardPanel, "LOGIN");
+		pack();
+		setVisible(true);
 		
+		return true;
+	}
+	
+	@Override
+	public boolean remove() {
+		dispose();
+		return true;
 	}
 	
 	//=======================================
-	//	VIEWER MODE
+	//	MODES
 	//---------------------------------------
 
 	@Override
-	public void setMessage(String message) {
+	public boolean setMessage(String message) {
 		System.out.println(message);
+		return true;
 	}
 
 	/**
@@ -110,4 +120,7 @@ public class LoginFrame2 extends JFrame implements LoginInterface {
 		card.show(cardPanel, "REGISTER");
 		setTitle("ImageViewer - Register");
 	}
+
+
+
 }

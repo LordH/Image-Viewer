@@ -1,4 +1,4 @@
-package se.viewer.image.gui.login;
+package se.viewer.image.gui.components.login;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;

@@ -1,4 +1,4 @@
-package se.viewer.image.gui.viewer;
+package se.viewer.image.gui.components.viewer;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -16,9 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
+import se.viewer.image.client.Client;
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
-import se.viewer.image.launcher.Client;
 import se.viewer.image.tokens.DeliverThumbnailsToken;
 
 /**
@@ -156,9 +156,6 @@ public class ViewerPanel extends JPanel implements ViewerInterface{
 	//	IMAGE HANDLING METHODS
 	//---------------------------------------
 
-	/* (non-Javadoc)
-	 * @see se.viewer.image.gui.ViewerInterface#displayImage()
-	 */
 	@Override
 	public void displayImage() {
 		thumbnailPanel.clearDisplay();
@@ -167,9 +164,6 @@ public class ViewerPanel extends JPanel implements ViewerInterface{
 		card.show(rightPanel, IMAGE);
 	}
 	
-	/* (non-Javadoc)
-	 * @see se.viewer.image.gui.ViewerInterface#setImage(se.viewer.image.containers.Image)
-	 */
 	@Override
 	public void setImage(Image image) {
 		source = image;
@@ -177,9 +171,6 @@ public class ViewerPanel extends JPanel implements ViewerInterface{
 		sidePanel.setImage(source);
 	}
 	
-	/* (non-Javadoc)
-	 * @see se.viewer.image.gui.ViewerInterface#clearImage()
-	 */
 	@Override
 	public void clearImage() {
 		setImage(null);
@@ -189,9 +180,6 @@ public class ViewerPanel extends JPanel implements ViewerInterface{
 	//	TAG HANDLING METHODS
 	//---------------------------------------
 	
-	/* (non-Javadoc)
-	 * @see se.viewer.image.gui.ViewerInterface#setTags(java.util.ArrayList)
-	 */
 	@Override
 	public void setTags(ArrayList<Tag> tags) {
 		sidePanel.setTags(tags);
@@ -200,10 +188,7 @@ public class ViewerPanel extends JPanel implements ViewerInterface{
 	//=======================================
 	//	LOADING PANEL HANDLING METHODS
 	//---------------------------------------
-		
-	/* (non-Javadoc)
-	 * @see se.viewer.image.gui.ViewerInterface#displayLoading()
-	 */
+	
 	@Override
 	public void displayLoading() {
 		thumbnailPanel.clearDisplay();
@@ -211,9 +196,6 @@ public class ViewerPanel extends JPanel implements ViewerInterface{
 		card.show(rightPanel, LOADING);
 	}
 	
-	/* (non-Javadoc)
-	 * @see se.viewer.image.gui.ViewerInterface#setUpdateProgress(java.lang.String, int)
-	 */
 	@Override
 	public void setUpdateProgress(String message, int percent) {
 		this.message.setText(message + " " + percent + "%");
@@ -224,20 +206,14 @@ public class ViewerPanel extends JPanel implements ViewerInterface{
 	//	THUMBNAIL HANDLING METHODS
 	//---------------------------------------
 	
-	/* (non-Javadoc)
-	 * @see se.viewer.image.gui.ViewerInterface#displayThumbnails()
-	 */
 	@Override
 	public void displayThumbnails() {
 		imagePanel.setImage(null);
 		card.show(rightPanel, THUMBNAILS);
 		displaying = THUMBNAILS;
-		Client.instance().setTitle(currentTag.getName());
+//		Client.instance().setTitle(currentTag.getName());
 	}
 	
-	/* (non-Javadoc)
-	 * @see se.viewer.image.gui.ViewerInterface#setThumbnails(se.viewer.image.tokens.DeliverThumbnailsToken)
-	 */
 	@Override
 	public void setThumbnails(DeliverThumbnailsToken token) {		
 		if(!token.getTag().equals(currentTag)) {

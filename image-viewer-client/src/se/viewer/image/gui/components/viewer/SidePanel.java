@@ -1,4 +1,4 @@
-package se.viewer.image.gui.viewer;
+package se.viewer.image.gui.components.viewer;
 
 import java.awt.Color;
 import java.awt.Component;

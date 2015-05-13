@@ -1,4 +1,4 @@
-package se.viewer.image.gui.login;
+package se.viewer.image.gui.components.login;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -15,14 +15,12 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 
 import se.viewer.image.communication.ServerCommunicator;
 import se.viewer.image.gui.style.Style;
@@ -31,13 +29,13 @@ public class LoginPanel extends JPanel implements Observer {
 	
 	private static final long serialVersionUID = 6572330916585974457L;
 
-	private LoginFrame2 parent;
+	private LoginFrame parent;
 	private boolean connected;
 	
 	private JTextField username;
 	private JPasswordField password;
 	
-	public LoginPanel(LoginFrame2 parent) {
+	public LoginPanel(LoginFrame parent) {
 		ServerCommunicator.instance().addObserver(this);
 		this.parent = parent;
 		connected = false;
@@ -118,14 +116,6 @@ public class LoginPanel extends JPanel implements Observer {
 		c.insets = new Insets(5, 15, 15, 15);
 		add(registerLabel, c);
 		
-		getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("ENTER"), "login");
-		getActionMap().put("login", new AbstractAction() {
-			private static final long serialVersionUID = 8381623336613000560L;
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				login();
-			}
-		});
 	}
 
 	@Override

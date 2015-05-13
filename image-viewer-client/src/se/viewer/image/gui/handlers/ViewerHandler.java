@@ -1,4 +1,4 @@
-package se.viewer.image.gui.factory;
+package se.viewer.image.gui.handlers;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -15,24 +15,21 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import se.viewer.image.communication.ServerCommunicator;
-import se.viewer.image.gui.login.LoginFrame2;
-import se.viewer.image.gui.login.LoginInterface;
-import se.viewer.image.gui.viewer.ViewerInterface;
-import se.viewer.image.gui.viewer.ViewerPanel;
+import se.viewer.image.gui.components.viewer.ViewerInterface;
+import se.viewer.image.gui.components.viewer.ViewerPanel;
 
 /**
  * Class for handling the GUI components for the Image Viewer client
  * @author Harald Brege
  */
-public class GUIHandler implements GUIHandlerInterface {
+public class ViewerHandler implements ViewerHandlerInterface {
 	
 	private JFrame frame;
-	private LoginInterface login;
 	
 	/**
 	 * Creates a new GUI handler 
 	 */
-	public GUIHandler() {
+	public ViewerHandler() {
 		//Initializing all objects needed to construct frame
 		frame = new JFrame();
 		
@@ -74,33 +71,6 @@ public class GUIHandler implements GUIHandlerInterface {
 		
 		System.out.println("Client frame created.");
 	}
-	
-	//=======================================
-	//	LOGIN MODE
-	//---------------------------------------
-
-	@Override
-	public void loginMode() {
-		if(login == null)
-			login = new LoginFrame2();
-		
-		frame.setVisible(false);
-		login.setVisible(true);
-	}
-
-	@Override
-	public void loginMessage(String message) {
-		login.setMessage(message);
-	}
-
-	@Override
-	public void loginSuccessful() {
-		login.setVisible(false);
-	}
-	
-	//=======================================
-	//	VIEWER MODE
-	//---------------------------------------
 
 	@Override
 	public ViewerInterface viewerMode() {
@@ -115,7 +85,7 @@ public class GUIHandler implements GUIHandlerInterface {
 		
 		return imagePanel;
 	}
-
+	
 	@Override
 	public void setTitle(String title) {
 		frame.setTitle(title);
