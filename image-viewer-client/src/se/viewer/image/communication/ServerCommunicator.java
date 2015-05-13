@@ -10,9 +10,9 @@ import java.util.LinkedList;
 import java.util.Observable;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import se.viewer.image.client.Client;
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
-import se.viewer.image.launcher.Client;
 import se.viewer.image.tokens.DeliverImageToken;
 import se.viewer.image.tokens.DeliverThumbnailsToken;
 import se.viewer.image.tokens.LoginFailedToken;
@@ -146,13 +146,11 @@ public class ServerCommunicator extends Observable implements Runnable {
 						if(answer.message() == Messages.LOGIN_SUCCESS) {
 							LoginSuccessToken t = (LoginSuccessToken) answer;
 							System.out.println("Login successful.");
-							Client.instance().loginSuccess(true, 0);
 							Client.instance().deliverThumbnails(t.getThumbs());
 							Client.instance().deliverTags(t.getTags());
 						}
 						else if(answer.message() == Messages.LOGIN_FAILURE) {
-							Client.instance().loginSuccess(false, 
-									((LoginFailedToken) answer).attemptsLeft());
+							
 						}
 
 					} catch (IOException e) {

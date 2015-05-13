@@ -1,13 +1,14 @@
-package se.viewer.image.launcher;
+package se.viewer.image.client;
 
 import java.util.ArrayList;
 
 import se.viewer.image.communication.ServerCommunicator;
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
-import se.viewer.image.gui.factory.GUIHandlerInterface;
-import se.viewer.image.gui.factory.GUISelector;
-import se.viewer.image.gui.viewer.ViewerInterface;
+import se.viewer.image.gui.components.viewer.ViewerInterface;
+import se.viewer.image.gui.handlers.GUIFactory;
+import se.viewer.image.gui.handlers.LoginHandlerInterface;
+import se.viewer.image.gui.handlers.ViewerHandlerInterface;
 import se.viewer.image.tokens.DeliverThumbnailsToken;
 
 /**
@@ -20,57 +21,83 @@ public class Client {
 	public static final int IMAGE_BUFFER_PROGRESS = 1;
 	public static final int IMAGE_BUFFER_COMPLETE = 2;
 	
+	public static final int MODE_LOGIN = 0;
+	public static final int MODE_VIEWER = 1;
+	private int mode;
+	
 	private static Client instance;
 	
-	private GUIHandlerInterface factory;
+	private ViewerHandlerInterface vHandler;
+	private LoginHandlerInterface lHandler;
+	
 	private ViewerInterface panel;
 	
 	private Client() {
-		factory = GUISelector.getFactory();
+		vHandler = GUIFactory.getViewerHandler();
+		lHandler = GUIFactory.getLoginHandler();
+		System.out.println("GUI initialized");
 	}
 	
+	//=======================================
+	//	LAUNCHER
+	//---------------------------------------
+	
+	/**
+	 * Launches the main client application
+	 * @param args Not in use
+	 */
+	public static void main(String[] args) {
+		instance().getLoginHandler().setupFrame();
+		System.out.println("Client application fully initialized");
+	}
+	
+	//=======================================
+	//	SERVICE ACCESS
+	//---------------------------------------
+		
 	/**
 	 * Called to get the client instance
 	 * @return The instance of Client
 	 */
 	public static Client instance() {
-		if(instance == null)
+		if(instance == null) {
 			instance = new Client();
+			System.out.println("Client instance created");
+		}
 		return instance;
 	}
 	
+	public ViewerHandlerInterface getViewerHandler() {
+		if(mode == MODE_VIEWER)
+			return vHandler;
+		else
+			return null;
+	}
+	
+	public LoginHandlerInterface getLoginHandler() {
+		if(mode == MODE_LOGIN)
+			return lHandler;
+		else
+			return null;
+	}
+		
 	//=======================================
-	//	CONNECTION REQUESTS
+	//	SET MODE
 	//---------------------------------------
-	
+		
 	/**
-	 * Runs the main view of the application
-	 */
-	public void start() {
-//		ServerCommunicator.instance().connect("192.168.1.3", 2106);
-		loginMode();
-	}
-	
-	/**
-	 * Called to set the title of the frame
-	 * @param title String to be set into the title
-	 */
-	public void setTitle(String title) {
-		factory.setTitle("Image Viewer - " + title);
-	}
-	
-	/**
-	 * Called to activate the main viewer mode of the application
+	 * Called to activate the viewer mode of the application
 	 */
 	public void viewerMode() {
-		panel = factory.viewerMode();
+		mode = MODE_VIEWER;
+		lHandler.removeFrame();
 	}
 	
 	/**
 	 * Called to activate the login mode of the application
 	 */
 	public void loginMode() {
-		factory.loginMode();
+		mode = MODE_LOGIN;
 	}
 	
 	//=======================================
@@ -98,40 +125,14 @@ public class Client {
 	//---------------------------------------
 	
 	/**
-	 * Called to inform the user of server connection success or failure
-	 * @param success If a connection to the server has been established or not
-	 * @param host The address of the host
-	 */
-	public void connectionSuccess(boolean success, String host) {
-		if(success)
-			factory.loginMessage("Connected to server at " + host);
-		else
-			factory.loginMessage("Could not connect to server at " + host);
-	}
-	
-	/**
-	 * Called to indicate whether the user has successfully logged in to the server or not
-	 * @param success Login success or failure
-	 * @param attemptsLeft How many more attempts to log in can be made
-	 */
-	public void loginSuccess(boolean success, int attemptsLeft) {
-		if(!success)
-			factory.loginMessage("Login failed! " + attemptsLeft + " attempts left.");
-		else {
-			factory.loginSuccessful();
-			viewerMode();
-		}
-	}
-	
-	/**
 	 * Called to indicate whether an attempt to register a new user has been successful or not
 	 * @param success Registration success or failure
 	 */
 	public void registrationSuccess(boolean success) {
 		if(success)
-			factory.loginMessage("Successfully created new user!");
+			lHandler.setMessage("Successfully created new user!");
 		else
-			factory.loginMessage("Failed to create user!");
+			lHandler.setMessage("Failed to create user!");
 	}
 
 	/**
@@ -183,6 +184,4 @@ public class Client {
 			break;
 		}
 	}
-	
-
 }

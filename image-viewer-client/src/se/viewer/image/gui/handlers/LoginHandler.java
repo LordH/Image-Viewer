@@ -1,4 +1,4 @@
-package se.viewer.image.gui.components.login;
+package se.viewer.image.gui.handlers;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -15,27 +15,33 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
+import se.viewer.image.gui.components.login.LoginPanel;
+import se.viewer.image.gui.components.login.RegisterPanel;
+import se.viewer.image.gui.components.login.ServerSelectPanel;
+
 /**
- * Handles logging in to servers and registering new users.
+ * As an implementation of the LoginFrameInterface, this class acts
+ * as a middle layer between the GUI components and the application in general.
  * @author Harald Brege
  */
-public class LoginFrame extends JFrame implements LoginFrameInterface  {
-	
-	private static final long serialVersionUID = 6273156355241808454L;
-	
+public class LoginHandler implements LoginHandlerInterface{
+
+	private JFrame frame = null;
 	private JPanel cardPanel;
 	private CardLayout card;
 	
 	@Override
-	public boolean setup() {
+	public boolean setupFrame() {		
+		frame = new JFrame();
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		setMinimumSize(new Dimension(300, 520));
-		setLocation((screen.width-getSize().width) / 2, (screen.height-getSize().height) / 2);
-		setTitle("ImageViewer - Login");
-		setResizable(false);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		frame.setMinimumSize(new Dimension(300, 520));
+		frame.setLocation((screen.width-frame.getSize().width) / 2, 
+				(screen.height-frame.getSize().height) / 2);
+		frame.setTitle("ImageViewer - Login");
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		Container content = getContentPane();
+		Container content = frame.getContentPane();
 		content.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -83,44 +89,37 @@ public class LoginFrame extends JFrame implements LoginFrameInterface  {
 		
 		//Setting up display
 		card.show(cardPanel, "LOGIN");
-		pack();
-		setVisible(true);
+		frame.pack();
+		frame.setVisible(true);
 		
 		return true;
 	}
-	
+
 	@Override
-	public boolean remove() {
-		dispose();
+	public boolean removeFrame() {
+		frame.dispose();
+		frame = null;
 		return true;
 	}
 	
-	//=======================================
-	//	MODES
-	//---------------------------------------
-
 	@Override
 	public boolean setMessage(String message) {
 		System.out.println(message);
 		return true;
 	}
-
 	/**
 	 * Sets the frame to show the login dialogs
 	 */
-	protected void loginMode() {
+	public void loginMode() {
 		card.show(cardPanel, "LOGIN");
-		setTitle("ImageViewer - Login");
+		frame.setTitle("ImageViewer - Login");
 	}
 	
 	/**
 	 * Sets the frame to show the register user dialogs
 	 */
-	protected void registerMode() {
+	public void registerMode() {
 		card.show(cardPanel, "REGISTER");
-		setTitle("ImageViewer - Register");
+		frame.setTitle("ImageViewer - Register");
 	}
-
-
-
 }
