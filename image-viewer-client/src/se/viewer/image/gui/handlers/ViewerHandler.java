@@ -1,5 +1,6 @@
 package se.viewer.image.gui.handlers;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -25,11 +26,10 @@ import se.viewer.image.gui.components.viewer.ViewerPanel;
 public class ViewerHandler implements ViewerHandlerInterface {
 	
 	private JFrame frame;
-	
-	/**
-	 * Creates a new GUI handler 
-	 */
-	public ViewerHandler() {
+	private ViewerInterface panel;
+
+	@Override
+	public boolean setupFrame() {
 		//Initializing all objects needed to construct frame
 		frame = new JFrame();
 		
@@ -69,26 +69,31 @@ public class ViewerHandler implements ViewerHandlerInterface {
 		});
 		menu.add(exitbutton);
 		
-		System.out.println("Client frame created.");
+		return true;
 	}
-
+	
 	@Override
-	public ViewerInterface viewerMode() {
-		ViewerPanel imagePanel = new ViewerPanel();
+	public boolean setupPanel() {
+		panel = new ViewerPanel(frame);
 		
 		frame.getContentPane().removeAll();
-		frame.getContentPane().add(imagePanel);
+		frame.getContentPane().add(((Component)panel));
 		frame.pack();
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setVisible(true);
 		System.out.println("Content added.");
 		
-		return imagePanel;
+		return true;
 	}
 	
 	@Override
 	public void setTitle(String title) {
 		frame.setTitle(title);
+	}
+	
+	@Override
+	public ViewerInterface getPanel() {
+		return panel;
 	}
 	
 	//=======================================
@@ -126,5 +131,9 @@ public class ViewerHandler implements ViewerHandlerInterface {
 		@Override
 		public void windowOpened(WindowEvent e) {}
 	}
+
+
+
+
 
 }

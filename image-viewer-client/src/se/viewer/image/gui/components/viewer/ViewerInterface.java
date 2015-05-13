@@ -12,20 +12,20 @@ public interface ViewerInterface {
 	public static final String THUMBNAILS = "thumbnails";
 	public static final String LOADING = "loading";
 
-	public abstract void displayImage();
+	public void displayImage();
 
-	public abstract void setImage(Image image);
+	public void setImage(Image image);
 
-	public abstract void clearImage();
+	public void clearImage();
 
-	public abstract void setTags(ArrayList<Tag> tags);
+	public void setTags(ArrayList<Tag> tags);
 
-	public abstract void displayLoading();
+	public void displayLoading();
 
-	public abstract void setUpdateProgress(String message, int percent);
+	public void setUpdateProgress(String message, int percent);
 
-	public abstract void displayThumbnails();
+	public void displayThumbnails();
 
-	public abstract void setThumbnails(DeliverThumbnailsToken token);
+	public void setThumbnails(DeliverThumbnailsToken token);
 
 }

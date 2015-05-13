@@ -11,12 +11,12 @@ import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
-import se.viewer.image.client.Client;
 import se.viewer.image.containers.Image;
 import se.viewer.image.containers.Tag;
 import se.viewer.image.tokens.DeliverThumbnailsToken;
@@ -39,9 +39,14 @@ public class ViewerPanel extends JPanel implements ViewerInterface{
 	private JPanel rightPanel;
 	private CardLayout card;
 	
+	private JFrame parent;
 	private JProgressBar progress;
 	private JLabel message;
 	private JPanel loadingPanel;
+	
+	public ViewerPanel(JFrame frame) {
+		this.parent = frame;
+	}
 	
 	/**
 	 * Creates a new image view panel
@@ -211,7 +216,7 @@ public class ViewerPanel extends JPanel implements ViewerInterface{
 		imagePanel.setImage(null);
 		card.show(rightPanel, THUMBNAILS);
 		displaying = THUMBNAILS;
-//		Client.instance().setTitle(currentTag.getName());
+		parent.setTitle(currentTag.getName());
 	}
 	
 	@Override
